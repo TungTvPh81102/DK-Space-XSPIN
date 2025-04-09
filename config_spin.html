@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quay Số Ngẫu Nhiên</title>
+    <title>Quản Lý Quay Số Ngẫu Nhiên</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,129 +16,199 @@
             background-size: cover;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            text-align: center;
         }
-        .button-group button {
-            padding: 10px 20px;
-            margin: 0 10px;
+        .nav-tabs .nav-link {
+            color: #333;
+        }
+        .nav-tabs .nav-link.active {
             background-color: #ff69b4;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
-        .button-group button:hover {
-            background-color: #ff1493;
-        }
-        .result-section {
-            margin-top: 20px;
+        .tab-content {
             background-color: white;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 0 0 10px 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .back-btn {
-            margin-bottom: 20px;
-        }
-        /* CSS cho hiệu ứng slot machine */
-        #stage {
-            perspective: 1000px;
-            margin: 20px auto;
-        }
-        .ring {
-            position: relative;
-            width: 60px;
-            height: 80px;
-            display: inline-block;
-            margin: 0 5px;
-            transform-style: preserve-3d;
-        }
-        .slot {
-            position: absolute;
-            width: 60px;
-            height: 80px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .table th, .table td {
+            vertical-align: middle;
             text-align: center;
-            line-height: 80px;
-            font-size: 36px;
         }
-        .slot p {
-            margin: 0;
+        .btn-primary {
+            background-color: #ff69b4;
+            border: none;
         }
-        .backface-on .slot {
-            backface-visibility: hidden;
+        .btn-primary:hover {
+            background-color: #ff1493;
         }
-        #rotate {
-            transform-style: preserve-3d;
-            transition: transform 2s;
+        .btn-danger {
+            background-color: #dc3545;
         }
-        .tilted {
-            transform: rotateX(45deg);
+        .btn-danger:hover {
+            background-color: #c82333;
         }
-        .perspective-on {
-            perspective: 1000px;
+        .btn-warning {
+            background-color: #ffc107;
+            color: #333;
         }
-        .perspective-off {
-            perspective: none;
+        .btn-warning:hover {
+            background-color: #e0a800;
         }
-        /* Keyframes cho hiệu ứng quay */
-        @keyframes back-spin {
-            0% { transform: rotateX(0deg); }
-            100% { transform: rotateX(-360deg); }
+        .form-group {
+            margin-bottom: 15px;
         }
-        @keyframes spin-0 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(360deg); } }
-        @keyframes spin-1 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(330deg); } }
-        @keyframes spin-2 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(300deg); } }
-        @keyframes spin-3 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(270deg); } }
-        @keyframes spin-4 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(240deg); } }
-        @keyframes spin-5 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(210deg); } }
-        @keyframes spin-6 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(180deg); } }
-        @keyframes spin-7 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(150deg); } }
-        @keyframes spin-8 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(120deg); } }
-        @keyframes spin-9 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(90deg); } }
-        @keyframes spin-10 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(60deg); } }
-        @keyframes spin-11 { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(30deg); } }
-        @keyframes tiltin {
-            0% { transform: rotateX(0deg); }
-            100% { transform: rotateX(45deg); }
+        .modal-header {
+            background-color: #ff69b4;
+            color: white;
         }
-        @keyframes tiltout {
-            0% { transform: rotateX(45deg); }
-            100% { transform: rotateX(0deg); }
+        .modal-footer .btn-primary {
+            background-color: #ff69b4;
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #ff1493;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="btn btn-secondary back-btn">Quay lại</a>
-        <h1>Quay Số Ngẫu Nhiên</h1>
-        <div id="stage" class="perspective-on">
-            <div id="rotate">
-                <div class="ring" id="ring1"></div>
-                <div class="ring" id="ring2"></div>
-                <div class="ring" id="ring3"></div>
-                <div class="ring" id="ring4"></div>
-                <div class="ring" id="ring5"></div>
-                <div class="ring" id="ring6"></div>
+        <h1 class="text-center mb-4">QUẢN LÝ QUAY SỐ NGẪU NHIÊN</h1>
+        <a href="spin.html" class="btn btn-primary mb-3">Quay Số Ngẫu Nhiên</a>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="prizes-tab" data-bs-toggle="tab" data-bs-target="#prizes" type="button" role="tab" aria-controls="prizes" aria-selected="true">Quản lý giải quay</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="participants-tab" data-bs-toggle="tab" data-bs-target="#participants" type="button" role="tab" aria-controls="participants" aria-selected="false">Danh sách người tham dự</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="winners-tab" data-bs-toggle="tab" data-bs-target="#winners" type="button" role="tab" aria-controls="winners" aria-selected="false">Danh sách trúng giải</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Tab Quản lý giải quay -->
+            <div class="tab-pane fade show active" id="prizes" role="tabpanel" aria-labelledby="prizes-tab">
+                <h3>Quản lý giải quay</h3>
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPrizeModal">Thêm giải</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên giải</th>
+                            <th>Số lần quay</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prizeTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Tab Danh sách người tham dự -->
+            <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
+                <h3>Danh sách người tham dự</h3>
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addParticipantModal">Thêm người tham dự</button>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ tên</th>
+                            <th>Phòng ban</th>
+                            <th>Mã quay số</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Tab Danh sách trúng giải -->
+            <div class="tab-pane fade" id="winners" role="tabpanel" aria-labelledby="winners-tab">
+                <h3>Danh sách trúng giải</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Ngày</th>
+                            <th>Tên giải</th>
+                            <th>Lần</th>
+                            <th>Họ tên</th>
+                            <th>Phòng ban</th>
+                            <th>Mã quay số</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="winnerTableBody"></tbody>
+                </table>
             </div>
         </div>
-        <div class="button-group" id="buttonGroup"></div>
-        <div class="result-section" id="resultSection" style="display: none;">
-            <h3>Kết Quả</h3>
-            <p><strong>Tên giải:</strong> <span id="resultPrize"></span></p>
-            <p><strong>Lần quay:</strong> <span id="resultTurn"></span></p>
-            <p><strong>Họ tên:</strong> <span id="resultName"></span></p>
-            <p><strong>Phòng ban:</strong> <span id="resultDepartment"></span></p>
-            <p><strong>Mã quay số:</strong> <span id="resultCode"></span></p>
+    </div>
+
+    <!-- Modal Thêm/Chỉnh sửa Giải -->
+    <div class="modal fade" id="addPrizeModal" tabindex="-1" aria-labelledby="addPrizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPrizeModalLabel">Thêm giải</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="prizeForm">
+                        <div class="form-group">
+                            <label for="prizeName">Tên giải</label>
+                            <input type="text" class="form-control" id="prizeName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prizeTurns">Số lần quay</label>
+                            <input type="number" class="form-control" id="prizeTurns" min="1" required>
+                        </div>
+                        <input type="hidden" id="prizeIndex">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="savePrize()">Lưu</button>
+                </div>
+            </div>
         </div>
-        <div class="mt-3">
-            <label><input type="checkbox" id="xray"> X-Ray (Hiển thị mặt sau)</label>
-            <label><input type="checkbox" id="perspective" checked> Perspective (Hiệu ứng 3D)</label>
+    </div>
+
+    <!-- Modal Thêm/Chỉnh sửa Người tham dự -->
+    <div class="modal fade" id="addParticipantModal" tabindex="-1" aria-labelledby="addParticipantModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addParticipantModalLabel">Thêm người tham dự</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="participantForm">
+                        <div class="form-group">
+                            <label for="participantName">Họ tên</label>
+                            <input type="text" class="form-control" id="participantName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="participantDepartment">Phòng ban</label>
+                            <input type="text" class="form-control" id="participantDepartment" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="participantCode">Mã quay số</label>
+                            <input type="text" class="form-control" id="participantCode" required>
+                        </div>
+                        <input type="hidden" id="participantIndex">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveParticipant()">Lưu</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -148,189 +216,169 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script>
-        // Constants cho slot machine
-        const SLOTS_PER_REEL = 12;
-        const REEL_RADIUS = 150;
-
-        // Lấy dữ liệu từ localStorage
+        // Khởi tạo dữ liệu từ localStorage
         let prizes = JSON.parse(localStorage.getItem('prizes')) || [];
         let participants = JSON.parse(localStorage.getItem('participants')) || [];
         let winners = JSON.parse(localStorage.getItem('winners')) || [];
 
-        let currentPrize = null;
-        let currentPrizeIndex = -1;
-
-        // Tạo các nút quay số dựa trên danh sách giải
-        const buttonGroup = document.getElementById('buttonGroup');
-        prizes.forEach((prize, index) => {
-            if (prize.status === 'Chưa quay') {
-                const button = document.createElement('button');
-                button.textContent = prize.name;
-                button.onclick = () => {
-                    currentPrize = prize;
-                    currentPrizeIndex = index;
-                    document.querySelector('.go').style.display = 'inline-block';
-                };
-                buttonGroup.appendChild(button);
-            }
-        });
-
-        // Thêm nút "Quay" (go)
-        const goButton = document.createElement('button');
-        goButton.className = 'go';
-        goButton.textContent = 'Quay';
-        goButton.style.display = 'none';
-        buttonGroup.appendChild(goButton);
-
-        // Hàm tạo slots
-        function createSlots(ring) {
-            var slotAngle = 360 / SLOTS_PER_REEL;
-
-            for (var i = 0; i < SLOTS_PER_REEL; i++) {
-                var slot = document.createElement('div');
-                slot.className = 'slot';
-                var transform = 'rotateX(' + (slotAngle * i) + 'deg) translateZ(' + REEL_RADIUS + 'px)';
-                slot.style.transform = transform;
-
-                // Hiển thị số từ 0 đến 9 (thay vì 0-11)
-                var content = $(slot).append('<p>' + (i % 10) + '</p>');
-                ring.append(slot);
-            }
+        // Hiển thị danh sách giải
+        function displayPrizes() {
+            const tableBody = document.getElementById('prizeTableBody');
+            tableBody.innerHTML = '';
+            prizes.forEach((prize, index) => {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${prize.name}</td>
+                        <td>${prize.turns}</td>
+                        <td>${prize.status}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editPrize(${index})">Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePrize(${index})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
         }
 
-        // Hàm lấy seed (để chọn vị trí dừng của vòng quay)
-        function getSeed() {
-            return Math.floor(Math.random() * SLOTS_PER_REEL);
-        }
+        // Thêm hoặc chỉnh sửa giải
+        function savePrize() {
+            const name = document.getElementById('prizeName').value;
+            const turns = parseInt(document.getElementById('prizeTurns').value);
+            const index = document.getElementById('prizeIndex').value;
 
-        // Hàm quay số
-        function spin(timer) {
-            if (!currentPrize || currentPrizeIndex === -1) {
-                alert('Vui lòng chọn một giải để quay!');
-                return;
+            if (index === '') {
+                // Thêm mới
+                prizes.push({ name, turns, status: 'Chưa quay' });
+            } else {
+                // Cập nhật
+                prizes[index] = { name, turns, status: prizes[index].status };
             }
 
-            if (participants.length === 0) {
-                alert('Không có người tham dự để quay số!');
-                return;
-            }
-
-            // Chọn ngẫu nhiên một người tham dự
-            const randomIndex = Math.floor(Math.random() * participants.length);
-            const winner = participants[randomIndex];
-            const randomCode = winner.code.padStart(6, '0'); // Đảm bảo mã có 6 chữ số
-
-            // Quay từng vòng để dừng lại ở các chữ số của mã trúng thưởng
-            for (var i = 1; i <= 6; i++) {
-                var oldSeed = -1;
-                var oldClass = $('#ring' + i).attr('class');
-                if (oldClass.length > 4) {
-                    oldSeed = parseInt(oldClass.slice(10));
-                }
-                // Chọn seed tương ứng với chữ số của mã trúng thưởng
-                var targetDigit = parseInt(randomCode[i - 1]); // Chữ số cần dừng
-                var seed = targetDigit; // Seed sẽ là vị trí của chữ số (0-9)
-                while (oldSeed == seed) {
-                    seed = (seed + 1) % SLOTS_PER_REEL;
-                }
-
-                $('#ring' + i)
-                    .css('animation', 'back-spin 1s, spin-' + seed + ' ' + (timer + i * 0.5) + 's')
-                    .attr('class', 'ring spin-' + seed);
-            }
-
-            // Sau khi quay xong, cập nhật kết quả
-            setTimeout(() => {
-                updateResult(currentPrize, currentPrizeIndex, winner, randomCode);
-            }, (timer + 3) * 1000); // Chờ animation hoàn tất
-        }
-
-        // Cập nhật kết quả sau khi quay
-        function updateResult(prize, prizeIndex, winner, randomCode) {
-            // Cập nhật trạng thái giải thành "Đã quay"
-            prizes[prizeIndex].status = 'Đã quay';
             localStorage.setItem('prizes', JSON.stringify(prizes));
-
-            // Tính lần quay hiện tại cho giải này
-            const currentTurn = winners.filter(w => w.prize === prize.name).length + 1;
-
-            // Thêm người trúng giải vào danh sách
-            const winnerData = {
-                date: new Date().toISOString().slice(0, 16),
-                prize: prize.name,
-                turn: currentTurn,
-                name: winner.name,
-                department: winner.department,
-                code: randomCode
-            };
-            winners.push(winnerData);
-            localStorage.setItem('winners', JSON.stringify(winners));
-
-            // Hiển thị kết quả
-            const resultSection = document.getElementById('resultSection');
-            document.getElementById('resultPrize').textContent = prize.name;
-            document.getElementById('resultTurn').textContent = currentTurn;
-            document.getElementById('resultName').textContent = winner.name;
-            document.getElementById('resultDepartment').textContent = winner.department;
-            document.getElementById('resultCode').textContent = randomCode;
-            resultSection.style.display = 'block';
-
-            // Xóa nút quay số nếu đã quay đủ số lần
-            if (currentTurn >= prize.turns) {
-                const button = buttonGroup.querySelector(`button:nth-child(${prizeIndex + 1})`);
-                if (button) button.remove();
-            }
-
-            // Ẩn nút "Quay" sau khi quay xong
-            document.querySelector('.go').style.display = 'none';
-            currentPrize = null;
-            currentPrizeIndex = -1;
+            displayPrizes();
+            bootstrap.Modal.getInstance(document.getElementById('addPrizeModal')).hide();
+            document.getElementById('prizeForm').reset();
+            document.getElementById('prizeIndex').value = '';
         }
 
-        // jQuery code
-        $(document).ready(function () {
-            // Khởi tạo slots 
-            createSlots($('#ring1'));
-            createSlots($('#ring2'));
-            createSlots($('#ring3'));
-            createSlots($('#ring4'));
-            createSlots($('#ring5'));
-            createSlots($('#ring6'));
+        // Chỉnh sửa giải
+        function editPrize(index) {
+            document.getElementById('prizeName').value = prizes[index].name;
+            document.getElementById('prizeTurns').value = prizes[index].turns;
+            document.getElementById('prizeIndex').value = index;
+            document.getElementById('addPrizeModalLabel').textContent = 'Chỉnh sửa giải';
+            new bootstrap.Modal(document.getElementById('addPrizeModal')).show();
+        }
 
-            // Hook start button
-            $('.go').on('click', function () {
-                var timer = 2;
-                spin(timer);
+        // Xóa giải
+        function deletePrize(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa giải này?')) {
+                prizes.splice(index, 1);
+                localStorage.setItem('prizes', JSON.stringify(prizes));
+                displayPrizes();
+            }
+        }
+
+        // Hiển thị danh sách người tham dự
+        function displayParticipants() {
+            const tableBody = document.getElementById('participantTableBody');
+            tableBody.innerHTML = '';
+            participants.forEach((participant, index) => {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${participant.name}</td>
+                        <td>${participant.department}</td>
+                        <td>${participant.code}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editParticipant(${index})">Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteParticipant(${index})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
             });
+        }
 
-            // Hook xray checkbox
-            $('#xray').on('click', function () {
-                var tilt = 'tiltout';
+        // Thêm hoặc chỉnh sửa người tham dự
+        function saveParticipant() {
+            const name = document.getElementById('participantName').value;
+            const department = document.getElementById('participantDepartment').value;
+            const code = document.getElementById('participantCode').value;
+            const index = document.getElementById('participantIndex').value;
 
-                if ($(this).is(':checked')) {
-                    tilt = 'tiltin';
-                    $('.slot').addClass('backface-on');
-                    $('#rotate').css('animation', tilt + ' 2s 1');
+            if (index === '') {
+                // Thêm mới
+                participants.push({ name, department, code });
+            } else {
+                // Cập nhật
+                participants[index] = { name, department, code };
+            }
 
-                    setTimeout(function () {
-                        $('#rotate').toggleClass('tilted');
-                    }, 2000);
-                } else {
-                    tilt = 'tiltout';
-                    $('#rotate').css({ 'animation': tilt + ' 2s 1' });
+            localStorage.setItem('participants', JSON.stringify(participants));
+            displayParticipants();
+            bootstrap.Modal.getInstance(document.getElementById('addParticipantModal')).hide();
+            document.getElementById('participantForm').reset();
+            document.getElementById('participantIndex').value = '';
+        }
 
-                    setTimeout(function () {
-                        $('#rotate').toggleClass('tilted');
-                        $('.slot').removeClass('backface-on');
-                    }, 1900);
-                }
+        // Chỉnh sửa người tham dự
+        function editParticipant(index) {
+            document.getElementById('participantName').value = participants[index].name;
+            document.getElementById('participantDepartment').value = participants[index].department;
+            document.getElementById('participantCode').value = participants[index].code;
+            document.getElementById('participantIndex').value = index;
+            document.getElementById('addParticipantModalLabel').textContent = 'Chỉnh sửa người tham dự';
+            new bootstrap.Modal(document.getElementById('addParticipantModal')).show();
+        }
+
+        // Xóa người tham dự
+        function deleteParticipant(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa người tham dự này?')) {
+                participants.splice(index, 1);
+                localStorage.setItem('participants', JSON.stringify(participants));
+                displayParticipants();
+            }
+        }
+
+        // Hiển thị danh sách trúng giải
+        function displayWinners() {
+            const tableBody = document.getElementById('winnerTableBody');
+            tableBody.innerHTML = '';
+            winners.forEach((winner, index) => {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${winner.date}</td>
+                        <td>${winner.prize}</td>
+                        <td>${winner.turn}</td>
+                        <td>${winner.name}</td>
+                        <td>${winner.department}</td>
+                        <td>${winner.code}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteWinner(${index})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
             });
+        }
 
-            // Hook perspective
-            $('#perspective').on('click', function () {
-                $('#stage').toggleClass('perspective-on perspective-off');
-            });
-        });
+        // Xóa người trúng giải
+        function deleteWinner(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa người trúng giải này?')) {
+                winners.splice(index, 1);
+                localStorage.setItem('winners', JSON.stringify(winners));
+                displayWinners();
+            }
+        }
+
+        // Khởi tạo hiển thị khi tải trang
+        displayPrizes();
+        displayParticipants();
+        displayWinners();
     </script>
 </body>
 </html>
