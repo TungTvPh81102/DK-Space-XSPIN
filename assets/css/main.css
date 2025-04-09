@@ -1,11 +1,113 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
-* {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Manrope", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-style: normal;
+}
+
+:root {
+    --primary: #1055B0;
+    --primary-dark: #0A2E5C;
+    --primary-light: #3B82F6;
+    --accent: #10B981;
+    --accent-light: #5EEAD4;
+    --gold: #00B4FF;
+    --gold-light: #42C9FF;
+    --white: #FFFFFF;
+    --light-gray: #F3F4F6;
+    --gray: #6B7280;
+    --dark-gray: #374151;
+    --black: #111827;
+    --shadow: rgba(0, 0, 0, 0.15);
+    --gradient-primary: linear-gradient(135deg, #0090FF, #003B7A);
+    --gradient-accent: linear-gradient(135deg, #10B981, #059669);
+    --gradient-gold: linear-gradient(135deg, #00B4FF, #0055A4);
+    --transition: all 0.3s ease;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: 'Manrope', sans-serif;
+    background-color: var(--white);
+    color: var(--dark-gray);
+    line-height: 1.7;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    border: none;
+    background: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.navbar {
+    background-color: var(--primary-dark);
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+}
+
+.navbar.scrolled {
+    padding: 10px 0;
+    background-color: rgba(10, 46, 92, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 8px rgba(0, 180, 255, 0.5));
+    transition: all 0.4s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 12px rgba(0, 180, 255, 0.8));
 }
