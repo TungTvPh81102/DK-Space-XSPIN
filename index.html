@@ -12,8 +12,79 @@
 </head>
 
 <body>
-    <h1>Ahihi</h1>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="logo.png" alt="XSPIN Logo" height="30"> 
+                <span class="ms-2">XSPIN</span>
+                <small class="d-block text-muted">PHẦN MỀM QUYỀN SỞ</small>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Vòng Quay May Mắn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Quay Số Gần Nhất</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Bốc Thăm Trúng Thưởng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Công Cụ Hay</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">XSPIN</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Liên Hệ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Hero Section -->
+    <section class="hero-section text-center text-white">
+        <div class="container">
+            <h1 class="display-4 fw-bold">XSPIN – GAMIFICATION MARKETING</h1>
+            <p class="lead">Xspin là nền tảng tạo mini game trúng thưởng dành cho các doanh nghiệp</p>
+            <div class="row mt-5">
+                <div class="col-md-3">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle fa-2x mb-3"></i>
+                        <p>Tạo mini game dễ dàng, linh hoạt</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-item">
+                        <i class="fas fa-gamepad fa-2x mb-3"></i>
+                        <p>Kho game đa dạng</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-item">
+                        <i class="fas fa-dollar-sign fa-2x mb-3"></i>
+                        <p>Chi phí rẻ</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="feature-item">
+                        <i class="fas fa-users fa-2x mb-3"></i>
+                        <p>Tư vấn, hỗ trợ chi tiết</p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-lg mt-5" id="registerBtn">ĐĂNG KÝ NGAY</button>
+        </div>
+    </section>
 
     <!-- Script -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
@@ -22,6 +93,26 @@
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
     <script src="./assets/js/app.js"></script>
+    <script>
+        $(document).ready(function() {
+    // Xử lý sự kiện khi nhấn nút "Đăng ký ngay"
+    $('#registerBtn').click(function() {
+        alert('Chuyển hướng đến trang đăng ký...');
+        // Thay thế alert bằng chuyển hướng thực tế nếu cần
+        // window.location.href = '/register';
+    });
+
+    // Thêm hiệu ứng hover cho các feature item
+    $('.feature-item').hover(
+        function() {
+            $(this).find('i').css('color', '#fff');
+        },
+        function() {
+            $(this).find('i').css('color', '#ff6200');
+        }
+    );
+});
+    </script>
     <!-- End Script -->
 </body>
 
