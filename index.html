@@ -8,6 +8,9 @@
     <title>DK-Space XSPIN | Nền tảng Gamification Marketing</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/index.css">
@@ -17,7 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="index.html">
                     <div class="logo-wrapper">
                         <img src="./assets/images/logo.png" alt="DK-Space XSPIN " class="logo">
                         <div class="brand-text">
@@ -32,7 +35,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home me-2"></i>Trang
+                        <li class="nav-item"><a class="nav-link " href="index.html"><i
+                                    class="fas fa-home me-2"></i>Trang
                                 Chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#about"><i
                                     class="fas fa-info-circle me-2"></i>Giới Thiệu</a></li>
@@ -40,10 +44,38 @@
                                 Vụ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#spin"><i class="fas fa-spinner me-2"></i>Quay
                                 Số</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#testimonials"><i
-                                    class="fas fa-quote-right me-2"></i>Đánh Giá</a></li>
                         <li class="nav-item"><a class="nav-link contact-link" href="#contact"><i
                                     class="fas fa-envelope me-2"></i>Liên Hệ</a></li>
+                        <li class="nav-item contact-link auth-buttons">
+                            <a class="nav-link " href="./pages/sign-up.html">
+                                <i class="fas fa-user-plus me-1"></i>Đăng Ký
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown user-dropdown d-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>
+                                <span class="user-name">Tên người dùng</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="pages/profile.html">
+                                        <i class="fas fa-user me-2"></i>Hồ sơ cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="pages/my-spins.html">
+                                        <i class="fas fa-history me-2"></i>Lịch sử quay số
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item logout-btn" href="#">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -155,65 +187,91 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-spinner"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                            <h3>Vòng Quay May Mắn</h3>
+                            <p>Tạo vòng quay may mắn với nhiều phần thưởng hấp dẫn, tăng cường tương tác và thu hút
+                                khách hàng.</p>
                         </div>
-                        <h3>Vòng Quay May Mắn</h3>
-                        <p>Tạo vòng quay may mắn với nhiều phần thưởng hấp dẫn, tăng cường tương tác và thu hút khách
-                            hàng.</p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-gift"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <h3>Mini Games</h3>
+                            <p>Thư viện mini games đa dạng giúp tăng tương tác, kéo dài thời gian khách hàng ở lại
+                                website.
+                            </p>
                         </div>
-                        <h3>Mini Games</h3>
-                        <p>Thư viện mini games đa dạng giúp tăng tương tác, kéo dài thời gian khách hàng ở lại website.
-                        </p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-chart-line"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Phân Tích Dữ Liệu</h3>
+                            <p>Theo dõi và phân tích hiệu quả của chiến dịch với các công cụ báo cáo chuyên nghiệp.</p>
                         </div>
-                        <h3>Phân Tích Dữ Liệu</h3>
-                        <p>Theo dõi và phân tích hiệu quả của chiến dịch với các công cụ báo cáo chuyên nghiệp.</p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-palette"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h3>Tùy Chỉnh Giao Diện</h3>
+                            <p>Tùy chỉnh giao diện theo nhận diện thương hiệu của doanh nghiệp, tạo trải nghiệm nhất
+                                quán.
                         </div>
-                        <h3>Tùy Chỉnh Giao Diện</h3>
-                        <p>Tùy chỉnh giao diện theo nhận diện thương hiệu của doanh nghiệp, tạo trải nghiệm nhất quán.
-                        </p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-mobile-alt"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3>Tương Thích Mobile</h3>
+                            <p>Trải nghiệm mượt mà trên mọi thiết bị, đặc biệt là điện thoại di động và máy tính bảng.
+                            </p>
                         </div>
-                        <h3>Tương Thích Mobile</h3>
-                        <p>Trải nghiệm mượt mà trên mọi thiết bị, đặc biệt là điện thoại di động và máy tính bảng.</p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
-                        <div class="service-icon">
-                            <i class="fas fa-bullhorn"></i>
+                        <div class="service-card-content">
+                            <div class="service-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <h3>Chiến Dịch Marketing</h3>
+                            <p>Tạo và quản lý chiến dịch marketing với các công cụ gamification hiệu quả.</p>
                         </div>
-                        <h3>Chiến Dịch Marketing</h3>
-                        <p>Tạo và quản lý chiến dịch marketing với các công cụ gamification hiệu quả.</p>
-                        <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        <div class="service-link-wrapper">
+                            <a href="#" class="service-link">Tìm hiểu thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -229,7 +287,8 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4">
-                    <img src="./assets/images/image1.png" alt="Spin Game Preview" class="img-fluid rounded-circle shadow">
+                    <img src="./assets/images/image1.png" alt="Spin Game Preview"
+                        class="img-fluid rounded-circle shadow">
                 </div>
                 <div class="col-lg-6">
                     <h3 class="mb-4 testimonial-title">Tăng cường tương tác với vòng quay may mắn</h3>
@@ -401,7 +460,8 @@
                             </div>
                             <p class="contact-text">
                                 <span>Địa Chỉ</span>
-                                Số 3, hẻm 35/7/5 phố Tu Hoàng, Phường Phương Canh, Quận Nam Từ Liêm, Thành phố Hà Nội, Việt Nam
+                                Số 3, hẻm 35/7/5 phố Tu Hoàng, Phường Phương Canh, Quận Nam Từ Liêm, Thành phố Hà Nội,
+                                Việt Nam
                             </p>
                         </div>
                         <div class="footer-contact-item">
@@ -419,7 +479,7 @@
                             </div>
                             <p class="contact-text">
                                 <span>Email</span>
-                               ductv44@dk-space.com
+                                ductv44@dk-space.com
                             </p>
                         </div>
                         <div class="footer-newsletter">
@@ -438,13 +498,11 @@
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
-        integrity="sha256-oP6HI9z1jBIj7Gi+G3+ZT+6u2n+6kzhsz+JmGQ1Z1DY=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
     <script src="./assets/js/app.js"></script>
-    <!-- End Script -->
 </body>
 
 </html>

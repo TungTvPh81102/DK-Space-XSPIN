@@ -35,6 +35,7 @@ function renderTable() {
     tableBody.empty();
     if (paginated.length === 0) {
         tableBody.append('<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>');
+        $('.pagination-info').empty();
     } else {
         paginated.forEach((p, index) => {
             tableBody.append(`
@@ -76,7 +77,7 @@ $('.btn-add-modal').on('click', function () {
 
     if (!name || !dept) {
         if (!name) toastr.error('Vui lòng nhập họ tên');
-        if (!dept) toastr.error('Vui lòng nhập phòng ban');
+        if (!dept) toastr.error('Vui lòng nhập quê quán');
         return;
     }
 
@@ -145,7 +146,7 @@ $('.btn-save-edit').on('click', function () {
     // Kiểm tra đầu vào
     if (!name || !dept) {
         if (!name) toastr.error('Vui lòng nhập họ tên');
-        if (!dept) toastr.error('Vui lòng nhập phòng ban');
+        if (!dept) toastr.error('Vui lòng nhập quê quán');
         return;
     }
 
@@ -187,21 +188,17 @@ function renderPagination(totalItems, perPage) {
     const pagination = $('.pagination');
     pagination.empty();
 
-    // Nếu không có trang nào thì không render luôn
     if (totalPages === 0) return;
 
-    // Giữ currentPage nằm trong giới hạn
     if (currentPage < 1) currentPage = 1;
     if (currentPage > totalPages) currentPage = totalPages;
 
-    // Nút "Trước"
     pagination.append(`
                     <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                         <a class="page-link" href="#" data-page="${currentPage - 1}">Trước</a>
                     </li>
                 `);
 
-    // Các số trang
     for (let i = 1; i <= totalPages; i++) {
         pagination.append(`
                         <li class="page-item ${currentPage === i ? 'active' : ''}">
@@ -210,7 +207,6 @@ function renderPagination(totalItems, perPage) {
                     `);
     }
 
-    // Nút "Tiếp theo"
     pagination.append(`
                     <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
                         <a class="page-link" href="#" data-page="${currentPage + 1}">Tiếp theo</a>
@@ -285,7 +281,7 @@ $('#excelInput').on('change', function (e) {
         importedData.forEach(row => {
             const spinCode = generateUniqueSpinCode();
             const fullName = String(row['Họ tên'] || '').trim();
-            const department = String(row['Phòng ban'] || '').trim();
+            const department = String(row['Quê quán'] || '').trim();
 
             if (
                 spinCode.length !== '' &&
