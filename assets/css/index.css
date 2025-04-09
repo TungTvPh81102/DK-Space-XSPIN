@@ -200,7 +200,6 @@
     opacity: 0.9;
 }
 
-/* ===== CTA BUTTONS ===== */
 .cta-buttons {
     margin-top: 60px;
     display: flex;
@@ -379,6 +378,8 @@
     overflow: hidden;
     z-index: 1;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
 .service-card::before {
@@ -392,6 +393,25 @@
     opacity: 0;
     transition: var(--transition);
     z-index: -1;
+}
+
+.service-card-content {
+    flex-grow: 1;
+}
+
+/* Thêm mới: Phần link luôn nằm dưới cùng */
+.service-link-wrapper {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.service-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
 }
 
 .service-card:hover {
