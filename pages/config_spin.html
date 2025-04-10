@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon">
+    <title>DK-Space XSPIN | Quản Lý Quay Số</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/config-spin.css">
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content d-flex flex-column align-items-center">
+                <a href="event.html">
+                    <img src="../assets/images/logo.png" class="logo-feature mb-4" alt="">
+                </a>
+                <h1>Quản Lý Sự Kiện</h1>
+                <p class="lead">Tạo và quản lý các sự kiện quay số của bạn</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container page-wrapper">
+        <button class="btn btn-back" onclick="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách sự kiện
+        </button>
+
+        <div class="event-info">
+            <h2 id="eventName">Đang tải thông tin sự kiện...</h2>
+            <p id="eventDate">Ngày tạo: --/--/----</p>
+        </div>
+
+        <button id="startSpin" class="btn btn-primary mb-4">
+            <i class="fas fa-random me-2"></i>Chuyển đến màn hình quay số
+        </button>
+
+        <div class="card">
+            <div class="card-header">
+                Quản lý chi tiết sự kiện
+            </div>
+            <ul class="nav nav-tabs" id="managementTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="prizes-tab" data-bs-toggle="tab" data-bs-target="#prizes"
+                        type="button" role="tab" aria-controls="prizes" aria-selected="true">
+                        <i class="fas fa-gift me-2"></i>Quản lý giải thưởng
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="participants-tab" data-bs-toggle="tab" data-bs-target="#participants"
+                        type="button" role="tab" aria-controls="participants" aria-selected="false">
+                        <i class="fas fa-users me-2"></i>Danh sách người tham gia
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="winners-tab" data-bs-toggle="tab" data-bs-target="#winners"
+                        type="button" role="tab" aria-controls="winners" aria-selected="false">
+                        <i class="fas fa-trophy me-2"></i>Danh sách trúng giải
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="managementTabsContent">
+                <div class="tab-pane fade show active" id="prizes" role="tabpanel" aria-labelledby="prizes-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Quản lý giải thưởng</h4>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPrizeModal">
+                            <i class="fas fa-plus-circle me-2"></i>Thêm giải thưởng
+                        </button>
+                    </div>
+
+                    <div id="prizeEmptyState" class="empty-state">
+                        <i class="fas fa-gift"></i>
+                        <h4>Chưa có giải thưởng nào</h4>
+                        <p>Bắt đầu bằng cách thêm giải thưởng đầu tiên cho sự kiện này</p>
+                    </div>
+
+                    <div id="prizeTableContainer" class="table-responsive" style="display: none;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th width="25%">Tên giải</th>
+                                    <th width="15%">Số lần quay</th>
+                                    <th width="20%">Số người trúng/lần quay</th>
+                                    <th width="20%">Trạng thái</th>
+                                    <th width="15%">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prizeTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Danh sách người tham gia</h4>
+                        <div>
+                            <input type="file" id="excelInput" accept=".xlsx, .xls" style="display: none;">
+                            <button class="btn btn-success btn-import">
+                                <i class="fas fa-file-import me-2"></i>Import dữ liệu
+                            </button>
+                            <a href="../assets/templates/participant_list_template.xlsx" download
+                                class="btn btn-info text-white">
+                                <i class="fas fa-download me-2"></i>Tải mẫu
+                            </a>
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addParticipantModal">
+                                <i class="fas fa-user-plus me-2"></i>Thêm người tham gia
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="participantEmptyState" class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h4>Chưa có người tham gia nào</h4>
+                        <p>Thêm người tham gia vào sự kiện quay số của bạn</p>
+                    </div>
+
+                    <div id="participantTableContainer" class="table-responsive" style="display: none;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th width="30%">Họ tên</th>
+                                    <th width="25%">Phòng ban</th>
+                                    <th width="20%">Mã quay số</th>
+                                    <th width="20%">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="participantTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="winners" role="tabpanel" aria-labelledby="winners-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Danh sách trúng giải</h4>
+                        <button class="btn btn-primary" id="exportWinnersBtn">
+                            <i class="fas fa-file-export me-2"></i>Xuất danh sách
+                        </button>
+                    </div>
+
+                    <div id="winnerEmptyState" class="empty-state">
+                        <i class="fas fa-trophy"></i>
+                        <h4>Chưa có người trúng giải</h4>
+                        <p>Kết quả trúng giải sẽ hiển thị ở đây sau khi bạn tiến hành quay số</p>
+                    </div>
+
+                    <div id="winnerTableContainer" class="table-responsive" style="display: none;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th width="15%">Ngày</th>
+                                    <th width="15%">Tên giải</th>
+                                    <th width="10%">Lần</th>
+                                    <th width="20%">Họ tên</th>
+                                    <th width="15%">Phòng ban</th>
+                                    <th width="10%">Mã số</th>
+                                    <th width="10%">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="winnerTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-fearure">
+        <div class="p-2 d-flex justify-content-center ">
+            <span>&copy; 2025 DK-Space XSPIN. All Rights Reserved. | Thiết kế bởi <a href="#">DK-Space</a></span>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="addPrizeModal" tabindex="-1" aria-labelledby="addPrizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPrizeModalLabel">Thêm giải thưởng mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="prizeForm">
+                        <div class="mb-3">
+                            <label for="prizeName" class="form-label">Tên giải thưởng</label>
+                            <input type="text" class="form-control" id="prizeName" placeholder="Nhập tên giải thưởng"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="prizeTurns" class="form-label">Số lần quay</label>
+                            <input type="number" class="form-control" id="prizeTurns" placeholder="Nhập số lần quay"
+                                min="1" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="prizeWinnersPerTurn" class="form-label">Số người trúng/lần quay</label>
+                            <input type="number" class="form-control" id="prizeWinnersPerTurn"
+                                placeholder="Nhập số người trúng mỗi lần" min="1" value="1" required>
+                        </div>
+                        <input type="hidden" id="prizeIndex" value="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="savePrizeBtn">Lưu giải thưởng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addParticipantModal" tabindex="-1" aria-labelledby="addParticipantModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addParticipantModalLabel">Thêm người tham gia mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="participantForm">
+                        <div class="mb-3">
+                            <label for="participantName" class="form-label">Họ tên</label>
+                            <input type="text" class="form-control" id="participantName" placeholder="Nhập họ tên"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="participantDepartment" class="form-label">Phòng ban</label>
+                            <input type="text" class="form-control" id="participantDepartment"
+                                placeholder="Nhập phòng ban" required>
+                        </div>
+                        <input type="hidden" id="participantIndex" value="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveParticipantBtn">Lưu người tham gia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa <span id="deleteItemName"></span>?</p>
+                    <p class="text-danger">Hành động này không thể hoàn tác.</p>
+                    <input type="hidden" id="deleteItemType" value="">
+                    <input type="hidden" id="deleteItemIndex" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xác nhận xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/config_spin.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const eventIdFromUrl = params.get('id');
+        const spinButton = document.getElementById('startSpin');
+        if (spinButton) {
+            spinButton.addEventListener('click', function (e) {
+                localStorage.setItem('currentEventId', eventIdFromUrl);
+                window.location.href = 'spin.html';
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -57,7 +57,7 @@ $(document).ready(function () {
 
   // AUTH
   function showToast(type, title, message) {
-    const bgColor = type === "success" ? "#28a745" : "#dc3545";
+    const bgColor = type === "success" ? "#198754" : "#dc3545";
     Toastify({
       text: `${title}: ${message}`,
       duration: 5000,
@@ -255,3 +255,4 @@ $(document).ready(function () {
     }, 1500);
   });
 });
+

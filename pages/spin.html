@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon">
+    <title>DK-Space XSPIN | Quay Số</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/spin.css">
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content d-flex flex-column align-items-center">
+                <a href="event.html">
+                    <img src="../assets/images/logo.png" class="logo-feature mb-4" alt="">
+                </a>
+                <h1>Quản Lý Sự Kiện</h1>
+                <p class="lead">Tạo và quản lý các sự kiện quay số của bạn</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container page-wrapper">
+        <button class="btn btn-back" onclick="goToConfig()">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại trang quản lý
+        </button>
+
+        <div class="event-info">
+            <h2 id="eventName">Đang tải thông tin sự kiện...</h2>
+            <p id="eventDate">Ngày tạo: --/--/----</p>
+        </div>
+
+        <div class="prize-select-container">
+            <h3>Chọn giải thưởng</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <select class="form-select" id="prizeSelect">
+                        <option value="" selected disabled>-- Chọn giải thưởng --</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <select class="form-select" id="turnSelect" disabled>
+                        <option value="" selected disabled>-- Chọn lần quay --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="spin-container">
+            <div class="prize-info">
+                <div class="prize-title" id="currentPrize">Chưa chọn giải thưởng</div>
+                <div class="prize-turn" id="currentTurn"></div>
+            </div>
+
+            <div class="spin-display">
+                <div class="spin-row">
+                    <div class="digit-box" id="digit1">0</div>
+                    <div class="digit-box" id="digit2">0</div>
+                    <div class="digit-box" id="digit3">0</div>
+                    <div class="digit-box" id="digit4">0</div>
+                    <div class="digit-box" id="digit5">0</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-spin" id="spinBtn" disabled>
+                    <i class="fas fa-random me-2"></i>Bắt đầu quay
+                </button>
+                <button class="btn btn-spin-again" id="spinAgainBtn" style="display: none;">
+                    <i class="fas fa-redo-alt me-2"></i>Quay lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-fearure">
+        <div class="p-2 d-flex justify-content-center ">
+            <span>&copy; 2025 DK-Space XSPIN. All Rights Reserved. | Thiết kế bởi <a href="#">DK-Space</a></span>
+        </div>
+    </footer>
+
+    <!-- Winner Modal -->
+    <div class="modal fade winner-modal" id="winnerModal" tabindex="-1" aria-labelledby="winnerModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="winnerModalLabel">Chúc mừng người trúng giải!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="confettiContainer"></div>
+                    <div class="winner-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+
+                    <table class="winners-table">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã số</th>
+                                <th>Họ và tên</th>
+                                <th>Phòng ban</th>
+                            </tr>
+                        </thead>
+                        <tbody id="winnersTableBody">
+                            <!-- Winners will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-save" id="saveWinnersBtn">
+                        <i class="fas fa-save me-2"></i>Lưu kết quả
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade confirm-modal" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="confirmModalLabel">Xác nhận quay lại</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn quay lại? Kết quả quay hiện tại sẽ không được lưu.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmSpinAgainBtn">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/spin.js"></script>
+</body>
+
+</html>
