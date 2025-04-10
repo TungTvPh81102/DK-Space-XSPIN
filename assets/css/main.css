@@ -23,6 +23,7 @@
     --gradient-primary: linear-gradient(135deg, #0090FF, #003B7A);
     --gradient-accent: linear-gradient(135deg, #10B981, #059669);
     --gradient-gold: linear-gradient(135deg, #00B4FF, #0055A4);
+    --gradient-blue: linear-gradient(135deg, #0090FF, #217cdd);
     --transition: all 0.3s ease;
 }
 
