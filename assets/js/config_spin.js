@@ -1,13 +1,13 @@
 const urlParams = new URLSearchParams(window.location.search);
 const eventId = urlParams.get("id");
 let eventData = null;
+let currentPage = 1;
+let perPage = 10;
+const searchInput = $('#searchInput');
 
 if (!eventId) {
   window.location.href = "event.html";
 }
-
-const participants =
-  JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
 
 function formatDate(timestamp) {
   const date = new Date(timestamp);
@@ -62,20 +62,6 @@ function filterPrizes() {
     row.style.display = textContent.includes(searchTerm) ? "" : "none";
   });
 }
-function filterParticipants() {
-  const searchTerm = document.getElementById("participantSearchInput").value.toLowerCase();
-  const rows = document.querySelectorAll("#participantTableBody tr");
-
-  rows.forEach((row) => {
-    // Lấy toàn bộ nội dung văn bản của các cột (trừ ảnh)
-    const textContent = Array.from(row.cells)
-      .filter((_, i) => i !== 4) // Bỏ qua cột ảnh
-      .map((cell) => cell.textContent.toLowerCase())
-      .join(" ");
-
-    row.style.display = textContent.includes(searchTerm) ? "" : "none";
-  });
-}
 function filterWinners() {
   const searchTerm = document.getElementById("winnerSearchInput").value.toLowerCase();
   const rows = document.querySelectorAll("#winnerTableBody tr");
@@ -112,7 +98,6 @@ function initEventData() {
   )}`;
 
   loadPrizes();
-  loadParticipants();
   loadWinners();
 }
 
@@ -209,12 +194,20 @@ function editPrize(index) {
 function savePrize() {
   const name = document.getElementById("prizeName").value.trim();
   const turns = parseInt(document.getElementById("prizeTurns").value);
-  const winnersPerTurn = parseInt(document.getElementById("prizeWinnersPerTurn").value);
+  const winnersPerTurn = parseInt(
+    document.getElementById("prizeWinnersPerTurn").value
+  );
   const index = document.getElementById("prizeIndex").value;
   const imageInput = document.getElementById("prizeImage");
   const file = imageInput.files[0];
 
-  if (!name || isNaN(turns) || turns < 1 || isNaN(winnersPerTurn) || winnersPerTurn < 1) {
+  if (
+    !name ||
+    isNaN(turns) ||
+    turns < 1 ||
+    isNaN(winnersPerTurn) ||
+    winnersPerTurn < 1
+  ) {
     showToast("Vui lòng điền đầy đủ thông tin giải thưởng!", "error");
     return;
   }
@@ -223,47 +216,47 @@ function savePrize() {
   reader.onload = function (e) {
     const imageBase64 = e.target.result;
 
-    let eventPrizes = JSON.parse(localStorage.getItem(`prizes_${eventId}`)) || [];
+  let eventPrizes = JSON.parse(localStorage.getItem(`prizes_${eventId}`)) || [];
 
-    if (index !== "") {
-      if (eventPrizes[index].status === "Đã quay") {
-        showToast("Không thể chỉnh sửa giải thưởng đã quay!", "error");
+  if (index !== "") {
+    if (eventPrizes[index].status === "Đã quay") {
+      showToast("Không thể chỉnh sửa giải thưởng đã quay!", "error");
         bootstrap.Modal.getInstance(document.getElementById("addPrizeModal")).hide();
-        return;
-      }
+      return;
+    }
 
-      eventPrizes[index] = {
-        ...eventPrizes[index],
+    eventPrizes[index] = {
+      ...eventPrizes[index],
         name,
         turns,
         winnersPerTurn,
         image: file ? imageBase64 : eventPrizes[index].image || null,
-      };
-      showToast("Cập nhật giải thưởng thành công!");
+    };
+    showToast("Cập nhật giải thưởng thành công!");
 
       document.getElementById("prizeImagePreview").src = "";
       document.getElementById("prizeImagePreviewContainer").style.display = "none";
-    } else {
-      eventPrizes.push({
+  } else {
+    eventPrizes.push({
         name,
         turns,
         winnersPerTurn,
-        status: "Chưa quay",
+      status: "Chưa quay",
         image: file ? imageBase64 : null,
-      });
-      showToast("Thêm giải thưởng thành công!");
-    }
+    });
+    showToast("Thêm giải thưởng thành công!");
+  }
 
-    localStorage.setItem(`prizes_${eventId}`, JSON.stringify(eventPrizes));
-    bootstrap.Modal.getInstance(document.getElementById("addPrizeModal")).hide();
-    document.getElementById("prizeForm").reset();
-    document.getElementById("prizeIndex").value = "";
+  localStorage.setItem(`prizes_${eventId}`, JSON.stringify(eventPrizes));
+  bootstrap.Modal.getInstance(document.getElementById("addPrizeModal")).hide();
+  document.getElementById("prizeForm").reset();
+  document.getElementById("prizeIndex").value = "";
     document.getElementById("prizeImage").value = "";
     document.getElementById("prizeImagePreview").src = "";
     document.getElementById("prizeImagePreviewContainer").style.display = "none";
     document.getElementById("addPrizeModalLabel").textContent = "Thêm giải thưởng mới";
 
-    loadPrizes();
+  loadPrizes();
   };
 
   if (file) {
@@ -300,153 +293,6 @@ function deletePrize(index) {
 }
 
 /**
- * Quản lý người tham gia
- */
-function loadParticipants() {
-  const eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const tableBody = document.getElementById("participantTableBody");
-  const emptyState = document.getElementById("participantEmptyState");
-  const tableContainer = document.getElementById("participantTableContainer");
-
-  if (eventParticipants.length === 0) {
-    emptyState.style.display = "block";
-    tableContainer.style.display = "none";
-    return;
-  }
-
-  emptyState.style.display = "none";
-  tableContainer.style.display = "block";
-
-  tableBody.innerHTML = "";
-
-  eventParticipants.forEach((participant, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${participant.name}</td>
-            <td>${participant.department}</td>
-            <td>${participant.code}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn btn-warning btn-sm" onclick="editParticipant(${index})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('người tham gia', '${participant.name
-      }', ${index}, 'participant')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-    tableBody.appendChild(row);
-  });
-}
-
-/**
- * Sửa thông tin người tham gia
- */
-function editParticipant(index) {
-  const eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const participant = eventParticipants[index];
-
-  document.getElementById("participantName").value = participant.name;
-  document.getElementById("participantDepartment").value =
-    participant.department;
-  document.getElementById("participantCode").value = participant.code;
-  document.getElementById("participantIndex").value = index;
-
-  document.getElementById("addParticipantModalLabel").textContent =
-    "Chỉnh sửa người tham gia";
-  new bootstrap.Modal(document.getElementById("addParticipantModal")).show();
-}
-
-/**
- * Lưu thông tin người tham gia
- * */
-function saveParticipant() {
-  const name = document.getElementById("participantName").value.trim();
-  const department = document
-    .getElementById("participantDepartment")
-    .value.trim();
-  const index = document.getElementById("participantIndex").value;
-
-  if (!name || !department) {
-    showToast("Vui lòng điền đầy đủ thông tin người tham gia!", "error");
-    return;
-  }
-
-  let eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-
-  let code;
-
-  if (index === "") {
-    do {
-      code = generateRandomCode();
-    } while (!isCodeUnique(code));
-
-    eventParticipants.push({
-      name: name,
-      department: department,
-      code: code,
-    });
-    showToast("Thêm người tham gia thành công!");
-  } else {
-    code = eventParticipants[index].code;
-
-    eventParticipants[index] = {
-      name: name,
-      department: department,
-      code: code,
-    };
-    showToast("Cập nhật người tham gia thành công!");
-  }
-
-  localStorage.setItem(
-    `participants_${eventId}`,
-    JSON.stringify(eventParticipants)
-  );
-  bootstrap.Modal.getInstance(
-    document.getElementById("addParticipantModal")
-  ).hide();
-  document.getElementById("participantForm").reset();
-  document.getElementById("participantIndex").value = "";
-  document.getElementById("addParticipantModalLabel").textContent =
-    "Thêm người tham gia mới";
-
-  loadParticipants();
-}
-
-/**
- * Xoá thông tin người tham gia
- */
-function deleteParticipant(index) {
-  let eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const participant = eventParticipants[index];
-  const eventWinners = JSON.parse(localStorage.getItem(`winners_${eventId}`)) || [];
-  const isWinner = eventWinners.some(
-    (winner) => winner.code === participant.code
-  );
-
-  if (isWinner) {
-    showToast(`Không thể xóa "${participant.name}" vì người này đã trúng giải! Hủy bỏ kết quả trúng trước khi xóa`, "error");
-    return;
-  }
-
-  // Nếu không trúng giải thì cho xóa
-  eventParticipants.splice(index, 1);
-  localStorage.setItem(
-    `participants_${eventId}`,
-    JSON.stringify(eventParticipants)
-  );
-  showToast(`Xóa người tham gia "${participant.name}" thành công!`);
-  loadParticipants();
-}
-
-/**
  * Quản lý người trúng giải
  */
 function loadWinners() {
@@ -465,17 +311,18 @@ function loadWinners() {
   tableContainer.style.display = "block";
 
   tableBody.innerHTML = "";
-
-  eventWinners.forEach((winner, index) => {
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const winnersToShow = eventWinners.slice(start, end);
+  
+  winnersToShow.forEach((winner, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${index + 1}</td>
-      <td>${winner.date}</td>
       <td>${winner.prize}</td>
-      <td>${winner.turn}</td>
-      <td>${winner.name}</td>
-      <td>${winner.department}</td>
       <td>${winner.code}</td>
+      <td>${winner.turn}</td>
+      <td>${winner.date}</td>
       <td>
         <button class="btn btn-danger btn-sm" onclick="confirmDelete('người trúng giải', '${winner.name
       }', ${index}, 'winner')">
@@ -485,7 +332,66 @@ function loadWinners() {
     `;
     tableBody.appendChild(row);
   });
+
+  renderPagination(eventWinners.length, perPage);
 }
+
+// search
+searchInput.on('input', function () {
+  currentPage = 1;
+  loadWinners();
+});
+
+// paginate
+function renderPagination(totalItems, perPage) {
+  const totalPages = Math.ceil(totalItems / perPage);
+  const pagination = $('.pagination');
+  pagination.empty();
+
+  if (totalPages <= 1) {
+    $('.pagination-info').empty();
+    return;
+  }
+
+  if (currentPage < 1) currentPage = 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  if (currentPage > 1) {
+    pagination.append(`
+      <li class="page-item">
+        <a class="page-link" href="#" data-page="${currentPage - 1}">Trước</a>
+      </li>
+    `);
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    pagination.append(`
+      <li class="page-item ${currentPage === i ? 'active' : ''}">
+        <a class="page-link" href="#" data-page="${i}">${i}</a>
+      </li>
+    `);
+  }
+
+  if (currentPage < totalPages) {
+    pagination.append(`
+      <li class="page-item">
+        <a class="page-link" href="#" data-page="${currentPage + 1}">Tiếp theo</a>
+      </li>
+    `);
+  }
+
+  $('.pagination-info').text(`Đang hiển trang ${currentPage} của ${totalPages} trang`);
+}
+
+$('.pagination').on('click', '.page-link', function (e) {
+  e.preventDefault();
+
+  const page = $(this).data('page');
+  if (page && page !== currentPage) {
+    currentPage = page;
+    loadWinners();
+  }
+});
 
 /**
  * Xoá người trúng giải
@@ -543,7 +449,6 @@ $("#excelInput").on("change", function (e) {
 
     if (importedCount > 0) {
       saveToLocalStorage();
-      loadParticipants();
       showToast(
         `Đã import thành công ${importedCount} người tham gia`,
         "success"
@@ -642,24 +547,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("savePrizeBtn").addEventListener("click", savePrize);
 
   document
-    .getElementById("saveParticipantBtn")
-    .addEventListener("click", saveParticipant);
-
-  document
     .getElementById("addPrizeModal")
     .addEventListener("hidden.bs.modal", function () {
       document.getElementById("prizeForm").reset();
       document.getElementById("prizeIndex").value = "";
       document.getElementById("addPrizeModalLabel").textContent =
         "Thêm giải thưởng mới";
-    });
-
-  document
-    .getElementById("addParticipantModal")
-    .addEventListener("hidden.bs.modal", function () {
-      document.getElementById("participantForm").reset();
-      document.getElementById("participantIndex").value = "";
-      document.getElementById("addParticipantModalLabel").textContent =
-        "Thêm người tham gia mới";
     });
 });

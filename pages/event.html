@@ -54,21 +54,7 @@
             </button>
         </div>
 
-        <!-- Event Table -->
-        <div id="eventTableContainer" class="table-responsive d-none">
-            <table class="table table-hover event-table">
-                <thead>
-                    <tr>
-                        <th width="5%">#</th>
-                        <th width="40%">Tên sự kiện</th>
-                        <th width="20%">Ngày tạo</th>
-                        <th width="20%">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody id="eventTableBody">
-                    <!-- Event list will be rendered here -->
-                </tbody>
-            </table>
+        <div id="eventCardContainer" class="event-list row d-none">
         </div>
     </div>
 
@@ -94,11 +80,15 @@
                             <input type="text" class="form-control" id="eventName" placeholder="Nhập tên sự kiện"
                                 required>
                         </div>
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Mô tả sự kiện (không bắt buộc)</label>
+                            <textarea class="form-control" id="eventDescription" rows="3" placeholder="Mô tả ngắn về sự kiện của bạn"></textarea>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary " id="saveEventBtn">Lưu Sự Kiện</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveEventBtn">Lưu Sự Kiện</button>
                 </div>
             </div>
         </div>
@@ -132,6 +122,7 @@
     <script src="../assets/js/common.js"></script>
    <script src="../assets/js/event.js">
     </script>
+    
 </body>
 
 </html>

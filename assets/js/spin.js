@@ -5,7 +5,8 @@ let winners = [];
 let currentPrize = null;
 let currentTurn = null;
 let isSpinning = false;
-let tempSelectedWinners = [];
+let tempSelectedCode = [];
+let randomCodes = [];
 const EVENT_ID_KEY = "currentEventId";
 const STORAGE_KEY_PREFIX = "event_";
 
@@ -32,19 +33,9 @@ function loadEventData() {
   }
 
   prizes = JSON.parse(localStorage.getItem(`prizes_${eventId}`)) || [];
-  participants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
   winners = JSON.parse(localStorage.getItem(`winners_${eventId}`)) || [];
 
-  displayEventInfo();
   populatePrizeSelect();
-}
-
-function displayEventInfo() {
-  document.getElementById("eventName").textContent =
-    eventData.name || "Sự kiện không xác định";
-  document.getElementById("eventDate").textContent =
-    "Ngày tạo: " + (eventData.createdAt || "--/--/----");
 }
 
 /**
@@ -53,7 +44,7 @@ function displayEventInfo() {
 function populatePrizeSelect() {
   const prizeSelect = document.getElementById("prizeSelect");
   prizeSelect.innerHTML =
-    '<option value="" selected disabled>-- Chọn giải thưởng --</option>';
+    '<option value="" selected disabled>Chọn giải thưởng</option>';
 
   if (prizes.length === 0) {
     showToast("Chưa có giải thưởng nào được cấu hình", "warning");
@@ -101,7 +92,7 @@ function populatePrizeSelect() {
 function populateTurnSelect(prizeIndex) {
   const turnSelect = document.getElementById("turnSelect");
   turnSelect.innerHTML =
-    '<option value="" selected disabled>-- Chọn lần quay --</option>';
+    '<option value="" selected disabled>Chọn lần quay</option>';
 
   if (prizeIndex === null || prizeIndex === undefined) return;
 
@@ -206,22 +197,6 @@ function setupEventListeners() {
 }
 
 /**
- * Lấy danh sách người có thể tham gia
- * Loại bỏ những người đã trúng giải
- * */
-function getAvailableParticipants() {
-  const allWinnerCodes = winners.map((winner) => winner.code);
-  const tempWinnerCodes = tempSelectedWinners.map((winner) => winner.code);
-  const allExcludedCodes = [
-    ...new Set([...allWinnerCodes, ...tempWinnerCodes]),
-  ];
-
-  return participants.filter(
-    (participant) => !allExcludedCodes.includes(participant.code)
-  );
-}
-
-/**
  * Bắt đầu quay số
  * Kiểm tra người tham gia khả dụng
  * Kích hoạt animation các chữ số
@@ -229,19 +204,16 @@ function getAvailableParticipants() {
 function startSpin() {
   if (isSpinning) return;
 
-  const availableParticipants = getAvailableParticipants();
-
-  if (availableParticipants.length === 0) {
-    showToast("Tất cả người tham gia đều đã nhận thưởng", "error");
-    return;
-  }
-
   isSpinning = true;
   const spinBtn = document.getElementById("spinBtn");
   const spinAgainBtn = document.getElementById("spinAgainBtn");
+  const prizeIndex = parseInt(document.getElementById("prizeSelect").value);
+  const prize = prizes[prizeIndex];
+
+  
+  spinBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2  spinning-icon"></i>Đang quay...';
   spinBtn.disabled = true;
   spinAgainBtn.style.display = "none";
-  spinBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang quay...';
 
   tempSelectedWinners = [];
 
@@ -261,7 +233,7 @@ function startSpin() {
   const spinDuration = 3000 + Math.random() * 2000;
 
   setTimeout(() => {
-    endSpin(availableParticipants);
+    endSpin(prize.winnersPerTurn);
   }, spinDuration);
 }
 
@@ -280,30 +252,31 @@ function stopDigitAnimation(digitElement) {
   clearInterval(digitElement.animationInterval);
 }
 
+function generateRandomCodes(count = 1) {
+  const codes = new Set();
+  while (codes.size < count) {
+    const randomCode = Math.floor(10000 + Math.random() * 90000).toString();
+    codes.add(randomCode);
+  }
+  return Array.from(codes);
+}
+
 /**
  * Kết thúc quay số
  * Chọn ngẫu nhiên người trúng giải
  */
-function endSpin(availableParticipants) {
-  const prizeIndex = parseInt(document.getElementById("prizeSelect").value);
-  const winnersPerTurn = prizes[prizeIndex].winnersPerTurn || 1;
-
-  const numberOfWinners = Math.min(
-    winnersPerTurn,
-    availableParticipants.length
-  );
-
-  const shuffledParticipants = [...availableParticipants].sort(
-    () => 0.5 - Math.random()
-  );
-
-  const selectedWinners = shuffledParticipants.slice(0, numberOfWinners);
+function endSpin(winnersCount) {
+  const randomNumbers = generateRandomCodes(winnersCount);
+  const selectedWinners = randomNumbers.map((number) => ({
+    code: number,
+    name: `Số trúng thưởng ${number}`,
+  }));
 
   tempSelectedWinners = selectedWinners;
 
   const firstWinner = selectedWinners[0];
-  const winnerCode = firstWinner.code || "00000";
-  const codeDigits = winnerCode.padStart(5, "0").split("");
+  const winnerCode = firstWinner.code;
+  const codeDigits = winnerCode.split("");
 
   const digitElements = [
     document.getElementById("digit1"),
@@ -313,14 +286,20 @@ function endSpin(availableParticipants) {
     document.getElementById("digit5"),
   ];
 
-  if (winnersPerTurn === 1) {
+  const prizeIndex = parseInt(document.getElementById("prizeSelect").value);
+  const currentPrize = prizes[prizeIndex];
+
+  // Nếu giải chỉ có 1 lần quay
+  if (currentPrize.turns === 1) {
     let currentDigitIndex = 0;
+    const winnerCode = selectedWinners[0].code;
+    const codeDigits = winnerCode.split("");
 
     function revealNextDigit() {
       if (currentDigitIndex < digitElements.length) {
         const digit = digitElements[currentDigitIndex];
         stopDigitAnimation(digit);
-        digit.textContent = codeDigits[currentDigitIndex] || "0";
+        digit.textContent = codeDigits[currentDigitIndex];
         playTickSound();
 
         currentDigitIndex++;
@@ -335,9 +314,10 @@ function endSpin(availableParticipants) {
         }
       }
     }
-
     revealNextDigit();
-  } else {
+  }
+  // Nếu giải có nhiều lần quay
+  else {
     for (let i = 0; i < digitElements.length; i++) {
       setTimeout(() => {
         stopDigitAnimation(digitElements[i]);
@@ -382,7 +362,7 @@ function displayWinnersTable(winners) {
                     <td>${index + 1}</td>
                     <td>${winner.code}</td>
                     <td>${winner.name}</td>
-                    <td>${winner.department}</td>
+                      <td>${new Date().toLocaleTimeString()}</td> 
                 `;
     tableBody.appendChild(row);
   });
@@ -390,7 +370,10 @@ function displayWinnersTable(winners) {
   const winnerModal = new bootstrap.Modal(
     document.getElementById("winnerModal")
   );
+
   winnerModal.show();
+
+  playConfettiEffect();
 }
 
 /**
@@ -414,7 +397,6 @@ function savePermanentWinners(winnersList) {
       prizeIndex: prizeIndex,
       turn: currentTurn,
       name: winner.name,
-      department: winner.department,
       code: winner.code,
     };
 
@@ -430,7 +412,7 @@ function savePermanentWinners(winnersList) {
   );
   const remainingTurns = prize.turns - uniqueCompletedTurns.size;
 
-  prize.remainingTurns = remainingTurns; 
+  prize.remainingTurns = remainingTurns;
 
   if (remainingTurns <= 0) {
     prize.status = "Đã quay";
@@ -438,7 +420,7 @@ function savePermanentWinners(winnersList) {
 
   eventPrizes[prizeIndex] = prize;
   localStorage.setItem(`prizes_${eventId}`, JSON.stringify(eventPrizes));
-  prizes = eventPrizes; 
+  prizes = eventPrizes;
 
   tempSelectedWinners = [];
 
@@ -486,4 +468,41 @@ function playTickSound() {
 function goToConfig() {
   window.location.href =
     "config_spin.html?id=" + localStorage.getItem(EVENT_ID_KEY);
+}
+
+/**
+ * Hiệu ứng pháo hoa khi quay xong
+ */
+function playConfettiEffect() {
+  const duration = 3000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  const interval = setInterval(function () {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+
+    confetti(
+      Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      })
+    );
+
+    confetti(
+      Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      })
+    );
+  }, 250);
 }

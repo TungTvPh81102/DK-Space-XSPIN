@@ -1,158 +1,146 @@
-function formatDate(date) {
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  const hours = String(d.getHours()).padStart(2, "0");
-  const minutes = String(d.getMinutes()).padStart(2, "0");
+document.addEventListener("DOMContentLoaded", function () {
+  loadEvents();
 
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
-}
+  document
+    .getElementById("saveEventBtn")
+    .addEventListener("click", function () {
+      saveEvent();
+    });
+
+  document
+    .getElementById("confirmDeleteBtn")
+    .addEventListener("click", function () {
+      const eventId = this.dataset.eventId;
+      if (eventId) {
+        deleteEvent(eventId);
+      }
+    });
+});
 
 function loadEvents() {
-  const events = JSON.parse(localStorage.getItem("events")) || [];
-  return events;
-}
+  const events = JSON.parse(localStorage.getItem("events") || "[]");
 
-function saveEvents(events) {
-  localStorage.setItem("events", JSON.stringify(events));
-}
-
-/**
- * Render danh sách sự kiện
- * */
-function renderEvents() {
-  const events = loadEvents();
-  const tableBody = document.getElementById("eventTableBody");
-  const emptyState = document.getElementById("emptyState");
-  const tableContainer = document.getElementById("eventTableContainer");
-  const eventCounter = document.getElementById("eventCounter");
-
-  eventCounter.textContent = events.length;
+  document.getElementById("eventCounter").textContent = events.length;
 
   if (events.length === 0) {
-    emptyState.classList.remove("d-none");
-    tableContainer.classList.add("d-none");
-    return;
+    document.getElementById("emptyState").classList.remove("d-none");
+    document.getElementById("eventCardContainer").classList.add("d-none");
   } else {
-    emptyState.classList.add("d-none");
-    tableContainer.classList.remove("d-none");
-  }
+    document.getElementById("emptyState").classList.add("d-none");
+    document.getElementById("eventCardContainer").classList.remove("d-none");
 
-  tableBody.innerHTML = "";
+    renderEventCards(events);
+  }
+}
+
+function renderEventCards(events) {
+  const container = document.getElementById("eventCardContainer");
+  container.innerHTML = "";
 
   events.forEach((event, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${event.name}</td>
-            <td>${formatDate(event.createdAt)}</td>
-            <td>
-                <a href="config_spin.html?id=${
-                  event.id
-                }" class="btn config-btn">
-                    <i class="fas fa-cog me-1"></i> Cấu hình
-                </a>
-                <button class="btn delete-btn" data-id="${
-                  event.id
-                }" data-name="${event.name}">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </td>
-        `;
-    tableBody.appendChild(row);
-  });
-
-  document.querySelectorAll(".delete-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const eventId = this.getAttribute("data-id");
-      const eventName = this.getAttribute("data-name");
-
-      document.getElementById("deleteEventName").textContent = eventName;
-
-      document
-        .getElementById("confirmDeleteBtn")
-        .setAttribute("data-id", eventId);
-
-      const deleteModal = new bootstrap.Modal(
-        document.getElementById("deleteConfirmModal")
-      );
-      deleteModal.show();
-    });
+    const eventCard = document.createElement("div");
+    eventCard.className = "col-lg-4 col-md-6 mb-4";
+    eventCard.innerHTML = `
+           <div class="event-card">
+               <div class="event-header">
+                   <div class="event-id">ID: ${event.id}</div>
+               </div>
+               <div class="event-body">
+                   <h5 class="event-name">${event.name}</h5>
+                   <p class="event-description">${
+                     event.description || "Không có mô tả"
+                   }</p>
+                   <div class="event-date">
+                       <i class="far fa-calendar-alt"></i> Ngày tạo: ${formatDate(
+                         event.createdAt
+                       )}
+                   </div>
+               </div>
+               <div class="event-footer">
+                   <div class="d-flex justify-content-between">
+                       <button class="btn action-btn config-btn" onclick="configEvent('${
+                         event.id
+                       }')">
+                           <i class="fas fa-cog"></i> Cấu hình
+                       </button>
+                       <button class="btn action-btn delete-btn" onclick="showDeleteModal('${
+                         event.id
+                       }', '${event.name}')">
+                           <i class="fas fa-trash-alt"></i> Xóa
+                       </button>
+                   </div>
+               </div>
+           </div>
+       `;
+    container.appendChild(eventCard);
   });
 }
 
-/**
- * Thêm sự kiện mới
- */
-document.getElementById("saveEventBtn").addEventListener("click", function () {
+function saveEvent() {
   const eventName = document.getElementById("eventName").value.trim();
+  const eventDescription = document
+    .getElementById("eventDescription")
+    .value.trim();
 
   if (!eventName) {
-    alert("Vui lòng nhập tên sự kiện");
+    showToast("Vui lòng nhập tên sự kiện", "error");
     return;
   }
 
-  const eventId = generateUUID();
+  const events = JSON.parse(localStorage.getItem("events") || "[]");
+
   const newEvent = {
-    id: eventId,
+    id: generateId(),
     name: eventName,
+    description: eventDescription,
     createdAt: new Date().toISOString(),
   };
 
-  const events = loadEvents();
   events.push(newEvent);
-  saveEvents(events);
 
-  const modal = bootstrap.Modal.getInstance(
-    document.getElementById("addEventModal")
-  );
-  modal.hide();
+  localStorage.setItem("events", JSON.stringify(events));
 
-  document.getElementById("eventName").value = "";
+  $("#addEventModal").modal("hide");
+  document.getElementById("addEventForm").reset();
 
-  renderEvents();
+  showToast("Sự kiện đã được tạo thành công!", "success");
+  loadEvents();
+}
 
-  Toastify({
-    text: "Thêm sự kiện thành công",
-    duration: 3000,
-    close: true,
-    gravity: "top",
-    position: "right",
-    backgroundColor: "#198754",
-  }).showToast();
-});
+function showDeleteModal(eventId, eventName) {
+  document.getElementById("deleteEventName").textContent = eventName;
+  document.getElementById("confirmDeleteBtn").dataset.eventId = eventId;
+  $("#deleteConfirmModal").modal("show");
+}
 
-/**
- * Xoá sự kiện
- * */
-document
-  .getElementById("confirmDeleteBtn")
-  .addEventListener("click", function () {
-    const eventId = this.getAttribute("data-id");
-    let events = loadEvents();
+function deleteEvent(eventId) {
+  let events = JSON.parse(localStorage.getItem("events") || "[]");
 
-    events = events.filter((event) => event.id !== eventId);
+  events = events.filter((event) => event.id !== eventId);
 
-    saveEvents(events);
+  localStorage.setItem("events", JSON.stringify(events));
 
-    const deleteModal = bootstrap.Modal.getInstance(
-      document.getElementById("deleteConfirmModal")
-    );
-    deleteModal.hide();
+  $("#deleteConfirmModal").modal("hide");
 
-    renderEvents();
+  showToast("Sự kiện đã được xóa thành công!", "success");
+  loadEvents();
+}
+
+function configEvent(eventId) {
+  window.location.href = `config_spin.html?id=${eventId}`;
+}
+
+function generateId() {
+  return "evt_" + Math.random().toString(36).substring(2, 12);
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
-
-/**
- * Khởi tạo DOM
- */
-document.addEventListener("DOMContentLoaded", function () {
-  renderEvents();
-
-  document
-    .getElementById("addEventModal")
-    .addEventListener("show.bs.modal", function () {
-      document.getElementById("eventName").value = "";
-    });
-});
+}

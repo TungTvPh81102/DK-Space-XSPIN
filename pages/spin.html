@@ -23,7 +23,7 @@
                 <a href="event.html">
                     <img src="../assets/images/logo.png" class="logo-feature mb-4" alt="">
                 </a>
-                <h1>Quản Lý Sự Kiện</h1>
+                <h1>Vòng quay may mắn</h1>
                 <p class="lead">Tạo và quản lý các sự kiện quay số của bạn</p>
             </div>
         </div>
@@ -34,31 +34,10 @@
             <i class="fas fa-arrow-left me-2"></i>Quay lại trang quản lý
         </button>
 
-        <div class="event-info">
-            <h2 id="eventName">Đang tải thông tin sự kiện...</h2>
-            <p id="eventDate">Ngày tạo: --/--/----</p>
-        </div>
-
-        <div class="prize-select-container">
-            <h3>Chọn giải thưởng</h3>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <select class="form-select" id="prizeSelect">
-                        <option value="" selected disabled>-- Chọn giải thưởng --</option>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <select class="form-select" id="turnSelect" disabled>
-                        <option value="" selected disabled>-- Chọn lần quay --</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
         <div class="spin-container">
-            <div class="prize-info">
-                <div class="prize-title" id="currentPrize">Chưa chọn giải thưởng</div>
-                <div class="prize-turn" id="currentTurn"></div>
+            <div class="d-flex justify-content-end mb-2">
+                <span class="badge text-bg-primary p-2" id="currentPrize">Chưa chọn giải thưởng</span>
+                <span class="badge text-bg-success p-2 ms-2" id="currentTurn"></span>
             </div>
 
             <div class="spin-display">
@@ -70,10 +49,21 @@
                     <div class="digit-box" id="digit5">0</div>
                 </div>
             </div>
-
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <div class="custom-select ">
+                    <select class="form-select " id="prizeSelect">
+                        <option value="" selected disabled> Chọn giải thưởng</option>
+                    </select>
+                </div>
+                <div class="custom-select ">
+                    <select class="form-select" id="turnSelect" disabled>
+                        <option value="" selected disabled>Chọn lần quay</option>
+                    </select>
+                </div>
+            </div>
             <div class="controls">
                 <button class="btn btn-spin" id="spinBtn" disabled>
-                    <i class="fas fa-random me-2"></i>Bắt đầu quay
+                    <i class="fas fa-random me-2 "></i>Bắt đầu quay
                 </button>
                 <button class="btn btn-spin-again" id="spinAgainBtn" style="display: none;">
                     <i class="fas fa-redo-alt me-2"></i>Quay lại
@@ -90,31 +80,27 @@
     </footer>
 
     <!-- Winner Modal -->
+    <!-- Winner Modal -->
     <div class="modal fade winner-modal" id="winnerModal" tabindex="-1" aria-labelledby="winnerModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title w-100 text-center" id="winnerModalLabel">Chúc mừng người trúng giải!</h5>
+                    <h5 class="modal-title w-100 text-center" id="winnerModalLabel">Kết quả quay số</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div id="confettiContainer"></div>
-                    <div class="winner-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-
                     <table class="winners-table">
                         <thead>
                             <tr>
                                 <th>STT</th>
                                 <th>Mã số</th>
-                                <th>Họ và tên</th>
-                                <th>Phòng ban</th>
+                                <th>Giải thưởng</th>
+                                <th>Thời gian</th>
                             </tr>
                         </thead>
                         <tbody id="winnersTableBody">
-                            <!-- Winners will be added here dynamically -->
                         </tbody>
                     </table>
                 </div>
@@ -151,6 +137,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="../assets/js/common.js"></script>
     <script src="../assets/js/spin.js"></script>
 </body>

@@ -55,169 +55,169 @@ $(document).ready(function () {
     }
   });
 
-  // AUTH
-  function showToast(type, title, message) {
-    const bgColor = type === "success" ? "#198754" : "#dc3545";
-    Toastify({
-      text: `${title}: ${message}`,
-      duration: 5000,
-      gravity: "top",
-      position: "right",
-      backgroundColor: bgColor,
-      close: true,
-      stopOnFocus: true,
-    }).showToast();
-  }
+  // // AUTH
+  // function showToast(type, title, message) {
+  //   const bgColor = type === "success" ? "#198754" : "#dc3545";
+  //   Toastify({
+  //     text: `${title}: ${message}`,
+  //     duration: 5000,
+  //     gravity: "top",
+  //     position: "right",
+  //     backgroundColor: bgColor,
+  //     close: true,
+  //     stopOnFocus: true,
+  //   }).showToast();
+  // }
 
-  $("#loginForm").on("submit", function (e) {
-    e.preventDefault();
+  // $("#loginForm").on("submit", function (e) {
+  //   e.preventDefault();
 
-    const email = $("#loginEmail").val();
-    const password = $("#loginPassword").val();
-    const rememberMe = $("#rememberMe").prop("checked");
+  //   const email = $("#loginEmail").val();
+  //   const password = $("#loginPassword").val();
+  //   const rememberMe = $("#rememberMe").prop("checked");
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (user) => user.email === email && user.password === password
-    );
+  //   const users = JSON.parse(localStorage.getItem("users") || "[]");
+  //   const user = users.find(
+  //     (user) => user.email === email && user.password === password
+  //   );
 
-    if (!user) {
-      showToast(
-        "error",
-        "Đăng nhập thất bại",
-        "Email hoặc mật khẩu không chính xác."
-      );
-      return;
-    }
+  //   if (!user) {
+  //     showToast(
+  //       "error",
+  //       "Đăng nhập thất bại",
+  //       "Email hoặc mật khẩu không chính xác."
+  //     );
+  //     return;
+  //   }
 
-    const currentUser = {
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      isLoggedIn: true,
-    };
+  //   const currentUser = {
+  //     name: user.name,
+  //     email: user.email,
+  //     phone: user.phone,
+  //     isLoggedIn: true,
+  //   };
 
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  //   localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    if (rememberMe) {
-      localStorage.setItem("rememberedUser", JSON.stringify({ email }));
-    } else {
-      localStorage.removeItem("rememberedUser");
-    }
+  //   if (rememberMe) {
+  //     localStorage.setItem("rememberedUser", JSON.stringify({ email }));
+  //   } else {
+  //     localStorage.removeItem("rememberedUser");
+  //   }
 
-    showToast(
-      "success",
-      "Đăng nhập thành công",
-      `Chào mừng ${user.name} đã quay trở lại!`
-    );
+  //   showToast(
+  //     "success",
+  //     "Đăng nhập thành công",
+  //     `Chào mừng ${user.name} đã quay trở lại!`
+  //   );
 
-    setTimeout(function () {
-      window.location.href = "../index.html";
-    }, 2000);
-  });
+  //   setTimeout(function () {
+  //     window.location.href = "../index.html";
+  //   }, 2000);
+  // });
 
-  $("#registerForm").on("submit", function (e) {
-    e.preventDefault();
+  // $("#registerForm").on("submit", function (e) {
+  //   e.preventDefault();
 
-    const name = $("#registerName").val().trim();
-    const email = $("#registerEmail").val().trim();
-    const phone = $("#registerPhone").val().trim();
-    const password = $("#registerPassword").val();
-    const confirmPassword = $("#confirmPassword").val();
-    const agreeTerms = $("#agreeTerms").prop("checked");
+  //   const name = $("#registerName").val().trim();
+  //   const email = $("#registerEmail").val().trim();
+  //   const phone = $("#registerPhone").val().trim();
+  //   const password = $("#registerPassword").val();
+  //   const confirmPassword = $("#confirmPassword").val();
+  //   const agreeTerms = $("#agreeTerms").prop("checked");
 
-    if (name.length < 3) {
-      showToast("error", "Lỗi", "Họ và tên phải có ít nhất 3 ký tự.");
-      return;
-    }
+  //   if (name.length < 3) {
+  //     showToast("error", "Lỗi", "Họ và tên phải có ít nhất 3 ký tự.");
+  //     return;
+  //   }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      showToast("error", "Lỗi", "Email không hợp lệ.");
-      return;
-    }
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(email)) {
+  //     showToast("error", "Lỗi", "Email không hợp lệ.");
+  //     return;
+  //   }
 
-    const phoneRegex = /^[0-9]{10,11}$/;
-    if (!phoneRegex.test(phone)) {
-      showToast("error", "Lỗi", "Số điện thoại phải có 10-11 chữ số.");
-      return;
-    }
+  //   const phoneRegex = /^[0-9]{10,11}$/;
+  //   if (!phoneRegex.test(phone)) {
+  //     showToast("error", "Lỗi", "Số điện thoại phải có 10-11 chữ số.");
+  //     return;
+  //   }
 
-    if (password.length < 6) {
-      showToast("error", "Lỗi", "Mật khẩu phải có ít nhất 6 ký tự.");
-      return;
-    }
+  //   if (password.length < 6) {
+  //     showToast("error", "Lỗi", "Mật khẩu phải có ít nhất 6 ký tự.");
+  //     return;
+  //   }
 
-    if (password !== confirmPassword) {
-      showToast("error", "Lỗi", "Mật khẩu xác nhận không khớp.");
-      return;
-    }
+  //   if (password !== confirmPassword) {
+  //     showToast("error", "Lỗi", "Mật khẩu xác nhận không khớp.");
+  //     return;
+  //   }
 
-    if (!agreeTerms) {
-      showToast(
-        "error",
-        "Lỗi",
-        "Bạn phải đồng ý với Điều khoản sử dụng và Chính sách bảo mật."
-      );
-      return;
-    }
+  //   if (!agreeTerms) {
+  //     showToast(
+  //       "error",
+  //       "Lỗi",
+  //       "Bạn phải đồng ý với Điều khoản sử dụng và Chính sách bảo mật."
+  //     );
+  //     return;
+  //   }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+  //   const users = JSON.parse(localStorage.getItem("users") || "[]");
 
-    if (users.some((user) => user.email === email)) {
-      showToast("error", "Lỗi", "Email này đã được sử dụng.");
-      return;
-    }
+  //   if (users.some((user) => user.email === email)) {
+  //     showToast("error", "Lỗi", "Email này đã được sử dụng.");
+  //     return;
+  //   }
 
-    if (users.some((user) => user.phone === phone)) {
-      showToast("error", "Lỗi", "Số điện thoại này đã được sử dụng.");
-      return;
-    }
+  //   if (users.some((user) => user.phone === phone)) {
+  //     showToast("error", "Lỗi", "Số điện thoại này đã được sử dụng.");
+  //     return;
+  //   }
 
-    const newUser = {
-      id: Date.now().toString(),
-      name: name,
-      email: email,
-      phone: phone,
-      password: password,
-      createdAt: new Date().toISOString(),
-    };
+  //   const newUser = {
+  //     id: Date.now().toString(),
+  //     name: name,
+  //     email: email,
+  //     phone: phone,
+  //     password: password,
+  //     createdAt: new Date().toISOString(),
+  //   };
 
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
+  //   users.push(newUser);
+  //   localStorage.setItem("users", JSON.stringify(users));
 
-    showToast(
-      "success",
-      "Đăng ký thành công",
-      "Tài khoản của bạn đã được tạo thành công!"
-    );
+  //   showToast(
+  //     "success",
+  //     "Đăng ký thành công",
+  //     "Tài khoản của bạn đã được tạo thành công!"
+  //   );
 
-    setTimeout(function () {
-      window.location.href = "sign-in.html";
-    }, 2000);
-  });
+  //   setTimeout(function () {
+  //     window.location.href = "sign-in.html";
+  //   }, 2000);
+  // });
 
-  const rememberedUser = JSON.parse(
-    localStorage.getItem("rememberedUser") || "null"
-  );
-  if (rememberedUser) {
-    $("#loginEmail").val(rememberedUser.email);
-    $("#rememberMe").prop("checked", true);
-  }
+  // const rememberedUser = JSON.parse(
+  //   localStorage.getItem("rememberedUser") || "null"
+  // );
+  // if (rememberedUser) {
+  //   $("#loginEmail").val(rememberedUser.email);
+  //   $("#rememberMe").prop("checked", true);
+  // }
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
-  if (currentUser && currentUser.isLoggedIn) {
-    setTimeout(function () {
-      showToast(
-        "success",
-        "Đã đăng nhập",
-        `Bạn đã đăng nhập với tài khoản ${currentUser.name}`
-      );
-      setTimeout(function () {
-        window.location.href = "../index.html";
-      }, 2000);
-    }, 500);
-  }
+  // const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  // if (currentUser && currentUser.isLoggedIn) {
+  //   setTimeout(function () {
+  //     showToast(
+  //       "success",
+  //       "Đã đăng nhập",
+  //       `Bạn đã đăng nhập với tài khoản ${currentUser.name}`
+  //     );
+  //     setTimeout(function () {
+  //       window.location.href = "../index.html";
+  //     }, 2000);
+  //   }, 500);
+  // }
 
   $(".social-btn button").hover(
     function () {
