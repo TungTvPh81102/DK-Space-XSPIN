@@ -9,9 +9,6 @@ if (!eventId) {
   window.location.href = "event.html";
 }
 
-const participants =
-  JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -54,20 +51,6 @@ function previewPrizeImage() {
 function filterPrizes() {
   const searchTerm = document.getElementById("prizeSearchInput").value.toLowerCase();
   const rows = document.querySelectorAll("#prizeTableBody tr");
-
-  rows.forEach((row) => {
-    // Lấy toàn bộ nội dung văn bản của các cột (trừ ảnh)
-    const textContent = Array.from(row.cells)
-      .filter((_, i) => i !== 4) // Bỏ qua cột ảnh
-      .map((cell) => cell.textContent.toLowerCase())
-      .join(" ");
-
-    row.style.display = textContent.includes(searchTerm) ? "" : "none";
-  });
-}
-function filterParticipants() {
-  const searchTerm = document.getElementById("participantSearchInput").value.toLowerCase();
-  const rows = document.querySelectorAll("#participantTableBody tr");
 
   rows.forEach((row) => {
     // Lấy toàn bộ nội dung văn bản của các cột (trừ ảnh)
@@ -365,7 +348,10 @@ function renderPagination(totalItems, perPage) {
   const pagination = $('.pagination');
   pagination.empty();
 
-  if (totalPages === 0) return;
+  if (totalPages <= 1) {
+    $('.pagination-info').empty();
+    return;
+  }
 
   if (currentPage < 1) currentPage = 1;
   if (currentPage > totalPages) currentPage = totalPages;
@@ -567,14 +553,5 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("prizeIndex").value = "";
       document.getElementById("addPrizeModalLabel").textContent =
         "Thêm giải thưởng mới";
-    });
-
-  document
-    .getElementById("addParticipantModal")
-    .addEventListener("hidden.bs.modal", function () {
-      document.getElementById("participantForm").reset();
-      document.getElementById("participantIndex").value = "";
-      document.getElementById("addParticipantModalLabel").textContent =
-        "Thêm người tham gia mới";
     });
 });

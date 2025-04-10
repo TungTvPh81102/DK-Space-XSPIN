@@ -107,62 +107,6 @@
                         </table>
                     </div>
                 </div>
-
-                <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
-                    <div class="mb-4">
-                        <h4 class="mb-0">Danh sách người tham gia</h4>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="mt-4">
-                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#addParticipantModal">
-                                <i class="fas fa-user-plus me-2"></i>Thêm người tham gia
-                                </button>
-                                <input type="file" id="excelInput" accept=".xlsx, .xls" style="display: none;">
-                                <button class="btn btn-success btn-import">
-                                    <i class="fas fa-file-import me-2"></i>Import dữ liệu
-                                </button>
-                                <a href="../assets/templates/participant_list_template.xlsx" download
-                                    class="btn btn-info text-white">
-                                    <i class="fas fa-download me-2"></i>Tải mẫu
-                                </a>
-                            </div>
-                            <div class="input-group mt-3" style="max-width: 300px;">
-                                <input
-                                  type="text"
-                                  id="participantSearchInput"
-                                  class="form-control py-2"
-                                  placeholder="Tìm kiếm người tham gia..."
-                                  style="border: 2px solid #7198e6;"
-                                  oninput="filterParticipants()"
-                                />
-                              </div>
-                        </div>
-
-                    </div>
-
-                    <div id="participantEmptyState" class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h4>Chưa có người tham gia nào</h4>
-                        <p>Thêm người tham gia vào sự kiện quay số của bạn</p>
-                    </div>
-
-                    <div id="participantTableContainer" class="table-responsive" style="display: none;">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th width="5%">STT</th>
-                                    <th width="30%">Họ tên</th>
-                                    <th width="25%">Phòng ban</th>
-                                    <th width="20%">Mã quay số</th>
-                                    <th width="20%">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="participantTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div class="tab-pane fade" id="winners" role="tabpanel" aria-labelledby="winners-tab">
                     <div class="mb-4">
                         <h4 class="mb-0">Danh sách trúng giải</h4>
@@ -275,38 +219,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="button" class="btn btn-primary" id="savePrizeBtn">Lưu giải thưởng</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="addParticipantModal" tabindex="-1" aria-labelledby="addParticipantModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addParticipantModalLabel">Thêm người tham gia mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="participantForm">
-                        <div class="mb-3">
-                            <label for="participantName" class="form-label">Họ tên</label>
-                            <input type="text" class="form-control" id="participantName" placeholder="Nhập họ tên"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="participantDepartment" class="form-label">Phòng ban</label>
-                            <input type="text" class="form-control" id="participantDepartment"
-                                placeholder="Nhập phòng ban" required>
-                        </div>
-                        <input type="hidden" id="participantCode" value="">
-                        <input type="hidden" id="participantIndex" value="">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="saveParticipantBtn">Lưu người tham gia</button>
                 </div>
             </div>
         </div>
