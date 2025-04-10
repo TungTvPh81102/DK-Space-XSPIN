@@ -23,7 +23,7 @@
                 <a href="event.html">
                     <img src="../assets/images/logo.png" class="logo-feature mb-4" alt="">
                 </a>
-                <h1>Quản Lý Sự Kiện</h1>
+                <h1>Cấu hình sự kiện</h1>
                 <p class="lead">Tạo và quản lý các sự kiện quay số của bạn</p>
             </div>
         </div>
@@ -55,12 +55,6 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="participants-tab" data-bs-toggle="tab" data-bs-target="#participants"
-                        type="button" role="tab" aria-controls="participants" aria-selected="false">
-                        <i class="fas fa-users me-2"></i>Danh sách người tham gia
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="winners-tab" data-bs-toggle="tab" data-bs-target="#winners"
                         type="button" role="tab" aria-controls="winners" aria-selected="false">
                         <i class="fas fa-trophy me-2"></i>Danh sách trúng giải
@@ -87,56 +81,14 @@
                             <thead>
                                 <tr>
                                     <th width="5%">STT</th>
-                                    <th width="25%">Tên giải</th>
+                                    <th width="10%">Tên giải</th>
                                     <th width="15%">Số lần quay</th>
                                     <th width="20%">Số người trúng/lần quay</th>
-                                    <th width="20%">Trạng thái</th>
+                                    <th width="15%">Trạng thái</th>
                                     <th width="15%">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody id="prizeTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="mb-0">Danh sách người tham gia</h4>
-                        <div>
-                            <input type="file" id="excelInput" accept=".xlsx, .xls" style="display: none;">
-                            <button class="btn btn-success btn-import">
-                                <i class="fas fa-file-import me-2"></i>Import dữ liệu
-                            </button>
-                            <a href="../assets/templates/participant_list_template.xlsx" download
-                                class="btn btn-info text-white">
-                                <i class="fas fa-download me-2"></i>Tải mẫu
-                            </a>
-                            <button class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#addParticipantModal">
-                                <i class="fas fa-user-plus me-2"></i>Thêm người tham gia
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="participantEmptyState" class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h4>Chưa có người tham gia nào</h4>
-                        <p>Thêm người tham gia vào sự kiện quay số của bạn</p>
-                    </div>
-
-                    <div id="participantTableContainer" class="table-responsive" style="display: none;">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th width="5%">STT</th>
-                                    <th width="30%">Họ tên</th>
-                                    <th width="25%">Phòng ban</th>
-                                    <th width="20%">Mã quay số</th>
-                                    <th width="20%">Hành động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="participantTableBody">
                             </tbody>
                         </table>
                     </div>
@@ -161,12 +113,10 @@
                             <thead>
                                 <tr>
                                     <th width="5%">STT</th>
-                                    <th width="15%">Ngày</th>
                                     <th width="15%">Tên giải</th>
-                                    <th width="10%">Lần</th>
-                                    <th width="20%">Họ tên</th>
-                                    <th width="15%">Phòng ban</th>
                                     <th width="10%">Mã số</th>
+                                    <th width="10%">Lần quay số</th>
+                                    <th width="15%">Ngày</th>
                                     <th width="10%">Hành động</th>
                                 </tr>
                             </thead>

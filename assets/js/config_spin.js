@@ -54,7 +54,6 @@ function initEventData() {
   )}`;
 
   loadPrizes();
-  loadParticipants();
   loadWinners();
 }
 
@@ -211,143 +210,6 @@ function deletePrize(index) {
 }
 
 /**
- * Quản lý người tham gia
- */
-function loadParticipants() {
-  const eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const tableBody = document.getElementById("participantTableBody");
-  const emptyState = document.getElementById("participantEmptyState");
-  const tableContainer = document.getElementById("participantTableContainer");
-
-  if (eventParticipants.length === 0) {
-    emptyState.style.display = "block";
-    tableContainer.style.display = "none";
-    return;
-  }
-
-  emptyState.style.display = "none";
-  tableContainer.style.display = "block";
-
-  tableBody.innerHTML = "";
-
-  eventParticipants.forEach((participant, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${participant.name}</td>
-            <td>${participant.department}</td>
-            <td>${participant.code}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn btn-warning btn-sm" onclick="editParticipant(${index})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('người tham gia', '${
-                      participant.name
-                    }', ${index}, 'participant')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-    tableBody.appendChild(row);
-  });
-}
-
-/**
- * Sửa thông tin người tham gia
- */
-function editParticipant(index) {
-  const eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const participant = eventParticipants[index];
-
-  document.getElementById("participantName").value = participant.name;
-  document.getElementById("participantDepartment").value =
-    participant.department;
-  document.getElementById("participantCode").value = participant.code;
-  document.getElementById("participantIndex").value = index;
-
-  document.getElementById("addParticipantModalLabel").textContent =
-    "Chỉnh sửa người tham gia";
-  new bootstrap.Modal(document.getElementById("addParticipantModal")).show();
-}
-
-/**
- * Lưu thông tin người tham gia
- * */
-function saveParticipant() {
-  const name = document.getElementById("participantName").value.trim();
-  const department = document
-    .getElementById("participantDepartment")
-    .value.trim();
-  const index = document.getElementById("participantIndex").value;
-
-  if (!name || !department) {
-    showToast("Vui lòng điền đầy đủ thông tin người tham gia!", "error");
-    return;
-  }
-
-  let eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-
-  let code;
-
-  if (index === "") {
-    do {
-      code = generateRandomCode();
-    } while (!isCodeUnique(code));
-
-    eventParticipants.push({
-      name: name,
-      department: department,
-      code: code,
-    });
-    showToast("Thêm người tham gia thành công!");
-  } else {
-    code = eventParticipants[index].code;
-
-    eventParticipants[index] = {
-      name: name,
-      department: department,
-      code: code,
-    };
-    showToast("Cập nhật người tham gia thành công!");
-  }
-
-  localStorage.setItem(
-    `participants_${eventId}`,
-    JSON.stringify(eventParticipants)
-  );
-  bootstrap.Modal.getInstance(
-    document.getElementById("addParticipantModal")
-  ).hide();
-  document.getElementById("participantForm").reset();
-  document.getElementById("participantIndex").value = "";
-  document.getElementById("addParticipantModalLabel").textContent =
-    "Thêm người tham gia mới";
-
-  loadParticipants();
-}
-
-/**
- * Xoá thông tin người tham gia
- */
-function deleteParticipant(index) {
-  let eventParticipants =
-    JSON.parse(localStorage.getItem(`participants_${eventId}`)) || [];
-  const participantName = eventParticipants[index].name;
-  eventParticipants.splice(index, 1);
-  localStorage.setItem(
-    `participants_${eventId}`,
-    JSON.stringify(eventParticipants)
-  );
-  showToast(`Xóa người tham gia "${participantName}" thành công!`);
-  loadParticipants();
-}
-
-/**
  * Quản lý người trúng giải
  */
 function loadWinners() {
@@ -371,12 +233,10 @@ function loadWinners() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${index + 1}</td>
-      <td>${winner.date}</td>
       <td>${winner.prize}</td>
-      <td>${winner.turn}</td>
-      <td>${winner.name}</td>
-      <td>${winner.department}</td>
       <td>${winner.code}</td>
+      <td>${winner.turn}</td>
+      <td>${winner.date}</td>
       <td>
         <button class="btn btn-danger btn-sm" onclick="confirmDelete('người trúng giải', '${
           winner.name
@@ -445,7 +305,6 @@ $("#excelInput").on("change", function (e) {
 
     if (importedCount > 0) {
       saveToLocalStorage();
-      loadParticipants();
       showToast(
         `Đã import thành công ${importedCount} người tham gia`,
         "success"
@@ -542,10 +401,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initEventData();
 
   document.getElementById("savePrizeBtn").addEventListener("click", savePrize);
-
-  document
-    .getElementById("saveParticipantBtn")
-    .addEventListener("click", saveParticipant);
 
   document
     .getElementById("addPrizeModal")
