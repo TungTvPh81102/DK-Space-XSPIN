@@ -1,6 +1,9 @@
 const urlParams = new URLSearchParams(window.location.search);
 const eventId = urlParams.get("id");
 let eventData = null;
+let currentPage = 1;
+let perPage = 10;
+const searchInput = $('#searchInput');
 
 if (!eventId) {
   window.location.href = "event.html";
@@ -86,18 +89,16 @@ function loadPrizes() {
             <td>${prize.turns}</td>
             <td>${prize.winnersPerTurn || 1}</td>
             <td>
-                <span class="badge ${
-                  prize.status === "Đã quay" ? "bg-success" : "bg-warning"
-                }">${prize.status}</span>
+                <span class="badge ${prize.status === "Đã quay" ? "bg-success" : "bg-warning"
+      }">${prize.status}</span>
             </td>
             <td>
                 <div class="action-buttons">
                     <button class="btn btn-warning btn-sm" onclick="editPrize(${index})">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('giải thưởng', '${
-                      prize.name
-                    }', ${index}, 'prize')">
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete('giải thưởng', '${prize.name
+      }', ${index}, 'prize')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -228,8 +229,11 @@ function loadWinners() {
   tableContainer.style.display = "block";
 
   tableBody.innerHTML = "";
-
-  eventWinners.forEach((winner, index) => {
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const winnersToShow = eventWinners.slice(start, end);
+  
+  winnersToShow.forEach((winner, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${index + 1}</td>
@@ -238,16 +242,73 @@ function loadWinners() {
       <td>${winner.turn}</td>
       <td>${winner.date}</td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="confirmDelete('người trúng giải', '${
-          winner.name
-        }', ${index}, 'winner')">
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete('người trúng giải', '${winner.name
+      }', ${index}, 'winner')">
           <i class="fas fa-trash"></i>
         </button>
       </td>
     `;
     tableBody.appendChild(row);
   });
+
+  renderPagination(eventWinners.length, perPage);
 }
+
+// search
+searchInput.on('input', function () {
+  currentPage = 1;
+  loadWinners();
+});
+
+// paginate
+function renderPagination(totalItems, perPage) {
+  const totalPages = Math.ceil(totalItems / perPage);
+  const pagination = $('.pagination');
+  pagination.empty();
+
+  if (totalPages === 0) return;
+
+  if (currentPage < 1) currentPage = 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  if (currentPage > 1) {
+    pagination.append(`
+      <li class="page-item">
+        <a class="page-link" href="#" data-page="${currentPage - 1}">Trước</a>
+      </li>
+    `);
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    pagination.append(`
+      <li class="page-item ${currentPage === i ? 'active' : ''}">
+        <a class="page-link" href="#" data-page="${i}">${i}</a>
+      </li>
+    `);
+  }
+
+  if (currentPage < totalPages) {
+    pagination.append(`
+      <li class="page-item">
+        <a class="page-link" href="#" data-page="${currentPage + 1}">Tiếp theo</a>
+      </li>
+    `);
+  }
+
+  const startItem = (currentPage - 1) * perPage + 1;
+  const endItem = Math.min(currentPage * perPage, totalItems);
+  $('.pagination-info').text(`Đang hiển thị ${startItem} đến ${endItem} của ${totalItems} kết quả`);
+}
+
+$('.pagination').on('click', '.page-link', function (e) {
+  e.preventDefault();
+
+  const page = $(this).data('page');
+  if (page && page !== currentPage) {
+    currentPage = page;
+    loadWinners();
+  }
+});
 
 /**
  * Xoá người trúng giải
@@ -263,7 +324,7 @@ function deleteWinner(index) {
 
 /**
  * Import dữ liệu
- * */ 
+ * */
 $(".btn-import").on("click", function () {
   $("#excelInput").click();
 });
