@@ -16,7 +16,37 @@
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/spin.css">
     <link rel="stylesheet" href="./assets/css/index.css">
+    <style>
+        .controlss {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        .dropdown {
+        width: 200px;
+        height: 40px;
+        background: #ffffff;
+        border: 2px solid #4a90e2;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #333333;
+        padding: 5px 10px;
+        appearance: none; /* Bỏ giao diện mặc định của select */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%234a90e2" d="M7 10l5 5 5-5z"/></svg>'); /* Mũi tên tùy chỉnh */
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
+    .dropdown:focus {
+        outline: none;
+        border-color: #2a6db0;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    }
+    </style>
 
 </head>
 
@@ -95,8 +125,8 @@
         <div class="hero-overlay"></div>
         <div class="container">
             <div class="spin-container">
+                <h1 class="custom-font">Quay số may mắn</h1>
                 <div class="d-flex justify-content-end mb-2">
-                    <span class="badge text-bg-primary p-2" id="currentPrize">Chưa chọn giải thưởng</span>
                     <span class="badge text-bg-success p-2 ms-2" id="currentTurn"></span>
                 </div>
     
@@ -108,36 +138,76 @@
                         <div class="digit-box" id="digit4">0</div>
                         <div class="digit-box" id="digit5">0</div>
                     </div>
-                </div>
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <div class="custom-select">
-                        <select class="form-select" id="prizeSelect">
-                            <option value="" selected disabled> Chọn giải thưởng</option>
+                    <div class="controlss mb-3">
+                        <select class="form-select dropdown" id="prizeSelect">
+                            <option value="" selected disabled>Chọn giải</option>
+                            <option value="Giải nhất">Giải nhất</option>
+                            <option value="Giải nhì">Giải nhì</option>
+                            <option value="Giải ba">Giải ba</option>
+                            <option value="Giải khuyến khích">Giải khuyến khích</option>
                         </select>
-                    </div>
-                    <div class="custom-select ">
-                        <select class="form-select" id="turnSelect" disabled>
-                            <option value="" selected disabled>Chọn lần quay</option>
+                        <select class="form-select dropdown" id="turnSelect">
+                            <option value="" selected disabled>Chọn số lần quay</option>
+                            <option value="Lần 1">Lần 1</option>
+                            <option value="Lần 2">Lần 2</option>
+                            <option value="Lần 3">Lần 3</option>
+                            <option value="Lần 4">Lần 4</option>
+                            <option value="Lần 5">Lần 5</option>
                         </select>
                     </div>
                 </div>
                 <div class="controls">
-                    <div class="d-flex justify-content-between">
-                        <a class="btn btn-warning" href="./pages/event.html">
-                            <i class="fas fa-cog"></i> Cài đặt
-                        </a>
-                    </div>
-                    <button class="btn btn-spin" id="spinBtn" disabled>
+                    <button class="btn btn-spin" id="spinBtn">
                         <i class="fas fa-random me-2 "></i>Bắt đầu quay
                     </button>
-                    <button class="btn btn-spin-again" id="spinAgainBtn" style="display: none;">
-                        <i class="fas fa-redo-alt me-2"></i>Quay lại
+                    <button class="btn btn-history" data-bs-toggle="modal" data-bs-target="#historyModal">
+                        <span>📜</span> LỊCH SỬ QUAY
                     </button>
+                    <!-- <button class="btn btn-spin-again" id="spinAgainBtn" style="display: none;">
+                        <i class="fas fa-redo-alt me-2"></i>Quay lại
+                    </button> -->
                 </div>
             </div>
         </div>
     </section>
-
+    <!-- Modal lịch sử quay -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel">Lịch sử quay số</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Giải thưởng</th>
+                            <th>Lần quay</th>
+                            <th>Số đã quay</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- Dữ liệu lịch sử sẽ được thêm bằng JavaScript -->
+                    </tbody>
+                </table>
+                <div id="historyEmptyState" style="display: none; text-align: center;">
+                    <p>Chưa có lịch sử quay số.</p>
+                </div>
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="pagination-info"></div>
+                    <nav>
+                        <ul class="pagination" id="historyPagination"></ul>
+                    </nav>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- About Section -->
     <section id="about" class="about-section">
         <div class="container">

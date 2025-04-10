@@ -7,14 +7,28 @@ let currentTurn = null;
 let isSpinning = false;
 let tempSelectedCode = [];
 let randomCodes = [];
+let spinHistory = JSON.parse(localStorage.getItem('spinHistory')) || [];
+let currentHistoryPage = 1;
+const historyPerPage = 10; 
 const EVENT_ID_KEY = "currentEventId";
 const STORAGE_KEY_PREFIX = "event_";
 
 document.addEventListener("DOMContentLoaded", function () {
   loadEventData();
   setupEventListeners();
+  loadSpinHistory();
 });
-
+document.getElementById('historyPagination').addEventListener('click', function (e) {
+  e.preventDefault();
+  const target = e.target.closest('.page-link');
+  if (target) {
+      const page = parseInt(target.getAttribute('data-page'));
+      if (page && page !== currentHistoryPage) {
+          currentHistoryPage = page;
+          loadSpinHistory();
+      }
+  }
+});
 function loadEventData() {
   const eventId = localStorage.getItem(EVENT_ID_KEY);
   if (!eventId) {
@@ -24,67 +38,58 @@ function loadEventData() {
     }, 2000);
     return;
   }
-
-  const events = JSON.parse(localStorage.getItem("events")) || [];
-  eventData = events.find((event) => event.id === eventId);
-  if (!eventData) {
-    showToast("Không thể tải dữ liệu sự kiện", "error");
-    return;
-  }
-
-  prizes = JSON.parse(localStorage.getItem(`prizes_${eventId}`)) || [];
   winners = JSON.parse(localStorage.getItem(`winners_${eventId}`)) || [];
 
-  populatePrizeSelect();
+}
+// Lưu lịch sử quay vào localStorage
+
+
+function saveSpinHistory(number, prize, turn) {
+  const timestamp = new Date().toLocaleString('vi-VN');
+  spinHistory.push({ number: number, prize: prize, turn: turn, timestamp: timestamp });
+  localStorage.setItem('spinHistory', JSON.stringify(spinHistory));
+  loadSpinHistory(); // Cập nhật bảng lịch sử
 }
 
+function loadSpinHistory() {
+  const tableBody = document.getElementById('historyTableBody');
+  const emptyState = document.getElementById('historyEmptyState');
+
+  if (spinHistory.length === 0) {
+    emptyState.style.display = 'block';
+    tableBody.innerHTML = '';
+    document.querySelector('.pagination-info').textContent = '';
+    document.getElementById('historyPagination').innerHTML = '';
+    return;
+}
+
+  emptyState.style.display = 'none';
+  tableBody.innerHTML = '';
+
+  // Tính toán các bản ghi cần hiển thị trên trang hiện tại
+  const start = (currentHistoryPage - 1) * historyPerPage;
+  const end = start + historyPerPage;
+  const historyToShow = spinHistory.slice(start, end);
+
+  // Hiển thị các bản ghi trên trang hiện tại
+  historyToShow.forEach((entry, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${start + index + 1}</td>
+          <td>${entry.prize}</td>
+          <td>${entry.turn}</td>
+          <td>${entry.number}</td>
+          <td>${entry.timestamp}</td>
+      `;
+      tableBody.appendChild(row);
+  });
+
+  // Hiển thị phân trang
+  renderHistoryPagination(spinHistory.length, historyPerPage);
+}
 /**
  * Chọn giải thưởng và lượt quay
  */
-function populatePrizeSelect() {
-  const prizeSelect = document.getElementById("prizeSelect");
-  prizeSelect.innerHTML =
-    '<option value="" selected disabled>Chọn giải thưởng</option>';
-
-  if (prizes.length === 0) {
-    showToast("Chưa có giải thưởng nào được cấu hình", "warning");
-    return;
-  }
-
-  const eventId = localStorage.getItem(EVENT_ID_KEY);
-  const eventWinners =
-    JSON.parse(localStorage.getItem(`winners_${eventId}`)) || [];
-
-  const availablePrizes = prizes.filter((prize, index) => {
-    const completedTurns = eventWinners
-      .filter((winner) => winner.prizeIndex == index)
-      .map((winner) => winner.turn);
-
-    const uniqueCompletedTurns = [...new Set(completedTurns)];
-
-    return uniqueCompletedTurns.length < prize.turns;
-  });
-
-  if (availablePrizes.length === 0) {
-    showToast("Tất cả giải thưởng đã hết lượt quay", "info");
-    return;
-  }
-
-  prizes.forEach((prize, index) => {
-    const completedTurns = eventWinners
-      .filter((winner) => winner.prizeIndex == index)
-      .map((winner) => winner.turn);
-
-    const uniqueCompletedTurns = [...new Set(completedTurns)];
-
-    if (uniqueCompletedTurns.length < prize.turns) {
-      const option = document.createElement("option");
-      option.value = index;
-      option.textContent = prize.name;
-      prizeSelect.appendChild(option);
-    }
-  });
-}
 
 /**
  * Tạo dropdown lần quay
@@ -137,54 +142,54 @@ function setupEventListeners() {
   const saveWinnersBtn = document.getElementById("saveWinnersBtn");
   const confirmSpinAgainBtn = document.getElementById("confirmSpinAgainBtn");
 
-  prizeSelect.addEventListener("change", function () {
-    const prizeIndex = parseInt(this.value);
-    currentPrize = prizes[prizeIndex];
-    currentTurn = null;
+  // prizeSelect.addEventListener("change", function () {
+  //   const prizeIndex = parseInt(this.value);
+  //   currentPrize = prizes[prizeIndex];
+  //   currentTurn = null;
 
-    document.getElementById("currentPrize").textContent = currentPrize.name;
-    document.getElementById("currentTurn").textContent = "";
+  //   document.getElementById("currentPrize").textContent = currentPrize.name;
+  //   document.getElementById("currentTurn").textContent = "";
 
-    populateTurnSelect(prizeIndex);
-    spinBtn.disabled = true;
-    spinAgainBtn.style.display = "none";
-  });
+  //   populateTurnSelect(prizeIndex);
+  //   spinBtn.disabled = true;
+  //   spinAgainBtn.style.display = "none";
+  // });
 
-  turnSelect.addEventListener("change", function () {
-    currentTurn = parseInt(this.value);
-    document.getElementById(
-      "currentTurn"
-    ).textContent = `Lần quay: ${currentTurn}`;
-    spinBtn.disabled = false;
-    spinAgainBtn.style.display = "none";
-  });
+  // turnSelect.addEventListener("change", function () {
+  //   currentTurn = parseInt(this.value);
+  //   document.getElementById(
+  //     "currentTurn"
+  //   ).textContent = `Lần quay: ${currentTurn}`;
+  //   spinBtn.disabled = false;
+  //   spinAgainBtn.style.display = "none";
+  // });
 
   spinBtn.addEventListener("click", startSpin);
-  spinAgainBtn.addEventListener("click", function () {
-    const confirmModal = new bootstrap.Modal(
-      document.getElementById("confirmModal")
-    );
-    confirmModal.show();
-  });
+  // spinAgainBtn.addEventListener("click", function () {
+  //   const confirmModal = new bootstrap.Modal(
+  //     document.getElementById("confirmModal")
+  //   );
+  //   confirmModal.show();
+  // });
 
-  confirmSpinAgainBtn.addEventListener("click", function () {
-    const confirmModal = bootstrap.Modal.getInstance(
-      document.getElementById("confirmModal")
-    );
-    confirmModal.hide();
-    startSpin();
-  });
+  // confirmSpinAgainBtn.addEventListener("click", function () {
+  //   const confirmModal = bootstrap.Modal.getInstance(
+  //     document.getElementById("confirmModal")
+  //   );
+  //   confirmModal.hide();
+  //   startSpin();
+  // });
 
-  saveWinnersBtn.addEventListener("click", function () {
-    if (tempSelectedWinners.length > 0) {
-      savePermanentWinners(tempSelectedWinners);
-      const winnerModal = bootstrap.Modal.getInstance(
-        document.getElementById("winnerModal")
-      );
-      winnerModal.hide();
-      showToast("Đã lưu kết quả quay thành công!", "success");
-    }
-  });
+  // saveWinnersBtn.addEventListener("click", function () {
+  //   if (tempSelectedWinners.length > 0) {
+  //     savePermanentWinners(tempSelectedWinners);
+  //     const winnerModal = bootstrap.Modal.getInstance(
+  //       document.getElementById("winnerModal")
+  //     );
+  //     winnerModal.hide();
+  //     showToast("Đã lưu kết quả quay thành công!", "success");
+  //   }
+  // });
 
   document
     .getElementById("winnerModal")
@@ -207,34 +212,65 @@ function startSpin() {
   isSpinning = true;
   const spinBtn = document.getElementById("spinBtn");
   const spinAgainBtn = document.getElementById("spinAgainBtn");
-  const prizeIndex = parseInt(document.getElementById("prizeSelect").value);
-  const prize = prizes[prizeIndex];
+  // Lấy giá trị từ dropdown
+  const selectedPrize = document.getElementById("prizeSelect").value;
+  const selectedTurn = document.getElementById("turnSelect").value;
 
-  
-  spinBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2  spinning-icon"></i>Đang quay...';
+  spinBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2 spinning-icon"></i>Đang quay...';
   spinBtn.disabled = true;
-  spinAgainBtn.style.display = "none";
+  // spinAgainBtn.style.display = "none";
 
   tempSelectedWinners = [];
 
   const digitElements = [
-    document.getElementById("digit1"),
-    document.getElementById("digit2"),
-    document.getElementById("digit3"),
-    document.getElementById("digit4"),
-    document.getElementById("digit5"),
+      document.getElementById("digit1"),
+      document.getElementById("digit2"),
+      document.getElementById("digit3"),
+      document.getElementById("digit4"),
+      document.getElementById("digit5"),
   ];
 
+  // Tạo số ngẫu nhiên 5 chữ số (00000-99999)
+  const finalNumber = Math.floor(Math.random() * 100000);
+  const finalDigits = String(finalNumber).padStart(5, '0').split('').map(Number);
+
+  // Bắt đầu animation cho các ô số
   digitElements.forEach((digit) => {
-    digit.textContent = "0";
-    startDigitAnimation(digit);
+      digit.textContent = "0";
+      startDigitAnimation(digit); // Bắt đầu lật số
   });
 
-  const spinDuration = 3000 + Math.random() * 2000;
+  const spinDuration = 3000 + Math.random() * 2000; // Thời gian quay (3-5 giây)
+  const spinsPerDigit = 20; // Số lần lật mỗi ô số
+  let currentSpin = 0;
 
-  setTimeout(() => {
-    endSpin(prize.winnersPerTurn);
-  }, spinDuration);
+  // Quay số ngẫu nhiên
+  const spinInterval = setInterval(() => {
+      digitElements.forEach((digit) => {
+          const randomDigit = Math.floor(Math.random() * 10);
+          digit.textContent = randomDigit;
+          // Không cần gọi lại startDigitAnimation vì nó đã chạy liên tục
+      });
+
+      currentSpin++;
+
+      if (currentSpin >= spinsPerDigit) {
+          clearInterval(spinInterval);
+          // Dừng tất cả animation và hiển thị số cuối cùng
+          setTimeout(() => {
+              digitElements.forEach((digit, index) => {
+                  stopDigitAnimation(digit); // Dừng animation lật số
+                  digit.textContent = finalDigits[index]; // Hiển thị số cuối cùng
+              });
+              isSpinning = false;
+              spinBtn.innerHTML = '<span>🎲</span> BẮT ĐẦU QUAY';
+              spinBtn.disabled = false;
+              // Lưu số vừa quay vào lịch sử
+              const finalNumberString = finalDigits.join('');
+              saveSpinHistory(finalNumberString, selectedPrize, selectedTurn);
+          }, 200); // Delay nhỏ để hiệu ứng lật cuối cùng hoàn thành
+      }
+  }, spinDuration / spinsPerDigit);
 }
 
 /**
@@ -505,4 +541,47 @@ function playConfettiEffect() {
       })
     );
   }, 250);
+}
+function renderHistoryPagination(totalItems, perPage) {
+  const totalPages = Math.ceil(totalItems / perPage);
+  const pagination = document.getElementById('historyPagination');
+  pagination.innerHTML = '';
+
+  if (totalPages <= 1) {
+      document.querySelector('.pagination-info').textContent = '';
+      return;
+  }
+
+  if (currentHistoryPage < 1) currentHistoryPage = 1;
+  if (currentHistoryPage > totalPages) currentHistoryPage = totalPages;
+
+  // Nút "Trước"
+  if (currentHistoryPage > 1) {
+      pagination.innerHTML += `
+          <li class="page-item">
+              <a class="page-link" href="#" data-page="${currentHistoryPage - 1}">Trước</a>
+          </li>
+      `;
+  }
+
+  // Các nút số trang
+  for (let i = 1; i <= totalPages; i++) {
+      pagination.innerHTML += `
+          <li class="page-item ${currentHistoryPage === i ? 'active' : ''}">
+              <a class="page-link" href="#" data-page="${i}">${i}</a>
+          </li>
+      `;
+  }
+
+  // Nút "Tiếp theo"
+  if (currentHistoryPage < totalPages) {
+      pagination.innerHTML += `
+          <li class="page-item">
+              <a class="page-link" href="#" data-page="${currentHistoryPage + 1}">Tiếp theo</a>
+          </li>
+      `;
+  }
+
+  // Hiển thị thông tin trang
+  document.querySelector('.pagination-info').textContent = `Đang hiển thị trang ${currentHistoryPage} của ${totalPages} trang`;
 }
