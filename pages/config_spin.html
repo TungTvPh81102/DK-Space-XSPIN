@@ -63,11 +63,24 @@
             </ul>
             <div class="tab-content" id="managementTabsContent">
                 <div class="tab-pane fade show active" id="prizes" role="tabpanel" aria-labelledby="prizes-tab">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="mb-4">
                         <h4 class="mb-0">Quản lý giải thưởng</h4>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPrizeModal">
-                            <i class="fas fa-plus-circle me-2"></i>Thêm giải thưởng
-                        </button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addPrizeModal">
+                                <i class="fas fa-plus-circle me-2"></i>Thêm giải thưởng
+                            </button>
+                            <div class="input-group mt-3" style="max-width: 300px;">
+                                <input
+                                  type="text"
+                                  id="prizeSearchInput"
+                                  class="form-control py-2"
+                                  placeholder="Tìm kiếm giải thưởng..."
+                                  style="border: 2px solid #7198e6;"
+                                  oninput="filterPrizes()"
+                                />
+                              </div>
+                        </div>
+                      
                     </div>
 
                     <div id="prizeEmptyState" class="empty-state">
@@ -81,9 +94,10 @@
                             <thead>
                                 <tr>
                                     <th width="5%">STT</th>
-                                    <th width="10%">Tên giải</th>
+                                    <th width="20%">Tên giải</th>
                                     <th width="15%">Số lần quay</th>
-                                    <th width="20%">Số người trúng/lần quay</th>
+                                    <th width="21%">Số người trúng/lần quay</th>
+                                    <th width="13%">Hình Ảnh</th>
                                     <th width="15%">Trạng thái</th>
                                     <th width="15%">Hành động</th>
                                 </tr>
@@ -94,12 +108,80 @@
                     </div>
                 </div>
 
+                <div class="tab-pane fade" id="participants" role="tabpanel" aria-labelledby="participants-tab">
+                    <div class="mb-4">
+                        <h4 class="mb-0">Danh sách người tham gia</h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="mt-4">
+                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addParticipantModal">
+                                <i class="fas fa-user-plus me-2"></i>Thêm người tham gia
+                                </button>
+                                <input type="file" id="excelInput" accept=".xlsx, .xls" style="display: none;">
+                                <button class="btn btn-success btn-import">
+                                    <i class="fas fa-file-import me-2"></i>Import dữ liệu
+                                </button>
+                                <a href="../assets/templates/participant_list_template.xlsx" download
+                                    class="btn btn-info text-white">
+                                    <i class="fas fa-download me-2"></i>Tải mẫu
+                                </a>
+                            </div>
+                            <div class="input-group mt-3" style="max-width: 300px;">
+                                <input
+                                  type="text"
+                                  id="participantSearchInput"
+                                  class="form-control py-2"
+                                  placeholder="Tìm kiếm người tham gia..."
+                                  style="border: 2px solid #7198e6;"
+                                  oninput="filterParticipants()"
+                                />
+                              </div>
+                        </div>
+
+                    </div>
+
+                    <div id="participantEmptyState" class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h4>Chưa có người tham gia nào</h4>
+                        <p>Thêm người tham gia vào sự kiện quay số của bạn</p>
+                    </div>
+
+                    <div id="participantTableContainer" class="table-responsive" style="display: none;">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="5%">STT</th>
+                                    <th width="30%">Họ tên</th>
+                                    <th width="25%">Phòng ban</th>
+                                    <th width="20%">Mã quay số</th>
+                                    <th width="20%">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="participantTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="tab-pane fade" id="winners" role="tabpanel" aria-labelledby="winners-tab">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="mb-4">
                         <h4 class="mb-0">Danh sách trúng giải</h4>
-                        <button class="btn btn-primary" id="exportWinnersBtn">
-                            <i class="fas fa-file-export me-2"></i>Xuất danh sách
-                        </button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-primary mt-4" id="exportWinnersBtn">
+                                <i class="fas fa-file-export me-2"></i>Xuất danh sách
+                            </button>
+                            <div class="input-group mt-3" style="max-width: 300px;">
+                                <input
+                                  type="text"
+                                  id="winnerSearchInput"
+                                  class="form-control py-2"
+                                  placeholder="Tìm kiếm người trúng giải..."
+                                  style="border: 2px solid #7198e6;"
+                                  oninput="filterWinners()"
+                                />
+                              </div>
+                        </div>
+
                     </div>
 
                     <div id="winnerEmptyState" class="empty-state">
@@ -180,6 +262,13 @@
                             <input type="number" class="form-control" id="prizeWinnersPerTurn"
                                 placeholder="Nhập số người trúng mỗi lần" min="1" value="1" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="prizeWinnersPerTurn" class="form-label">Ảnh giải thưởng</label>
+                            <input type="file" class="form-control" id="prizeImage" accept="image/*" onchange="previewPrizeImage()" />
+                            <div id="prizeImagePreviewContainer" class="mt-2" style="display:none;">
+                              <img id="prizeImagePreview" src="" alt="Ảnh giải thưởng" style="width: 100; height: 100px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;" />
+                            </div>
+                        </div>
                         <input type="hidden" id="prizeIndex" value="">
                     </form>
                 </div>
@@ -211,6 +300,7 @@
                             <input type="text" class="form-control" id="participantDepartment"
                                 placeholder="Nhập phòng ban" required>
                         </div>
+                        <input type="hidden" id="participantCode" value="">
                         <input type="hidden" id="participantIndex" value="">
                     </form>
                 </div>
